@@ -1,20 +1,56 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function HighImpactCTA() {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cardRef.current,
+        { scale: 0.93, opacity: 0.8 },
+        {
+          scale: 1.0,
+          opacity: 1,
+          duration: 1.0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 80%",
+            end: "center 50%",
+            scrub: 1.0,
+          },
+        }
+      );
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section className="relative w-full py-20 px-4 max-w-7xl mx-auto flex flex-col items-center">
       {/* High-Impact Nebula Glowing Card */}
-      <div className="relative w-full rounded-[36px] overflow-hidden glass-panel-glow border border-[#E03E99]/30 p-10 sm:p-16 md:p-20 text-center flex flex-col items-center justify-center shadow-[0_0_80px_-20px_rgba(224,62,153,0.4)]">
+      <div
+        ref={cardRef}
+        className="relative w-full rounded-[36px] overflow-hidden glass-panel-glow border border-[#E03E99]/35 p-10 sm:p-16 md:p-20 text-center flex flex-col items-center justify-center shadow-[0_0_90px_-15px_rgba(224,62,153,0.45)] will-change-transform"
+      >
         {/* Dynamic Nebula Ambient Background */}
         <div className="absolute inset-0 bg-gradient-to-tr from-[#7928CA]/30 via-[#E03E99]/25 to-[#F43F5E]/20 pointer-events-none" />
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-[#E03E99]/40 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-[#7928CA]/40 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -top-24 -left-24 w-80 h-80 bg-[#E03E99]/40 rounded-full blur-[110px] pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-[#7928CA]/40 rounded-full blur-[110px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col items-center max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-pink-200 mb-6 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-pink-200 mb-6 backdrop-blur-md shadow-inner">
             <Sparkles className="w-3.5 h-3.5 text-[#E03E99]" />
             <span>Join 10,000+ Active Traders Today</span>
           </div>
@@ -29,7 +65,7 @@ export default function HighImpactCTA() {
           </p>
 
           <div className="mt-8">
-            <button className="px-8 py-3.5 rounded-full btn-gradient-neon text-sm font-semibold flex items-center gap-2 shadow-[0_0_30px_rgba(224,62,153,0.6)] cursor-pointer">
+            <button className="px-8 py-3.5 rounded-full btn-gradient-neon text-sm font-semibold flex items-center gap-2 shadow-[0_0_35px_rgba(224,62,153,0.7)] hover:scale-105 transition-transform cursor-pointer">
               <span>Let&apos;s Talk Now</span>
               <ArrowRight className="w-4 h-4" />
             </button>

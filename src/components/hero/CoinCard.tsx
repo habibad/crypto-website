@@ -1,73 +1,60 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, TrendingDown, Sparkles } from "lucide-react";
+import { Plus, TrendingDown } from "lucide-react";
 import AlexandriaCoin3D from "../3d/AlexandriaCoin3D";
 
-interface CoinCardProps {
-  isZoomed?: boolean;
-}
-
-export default function CoinCard({ isZoomed = false }: CoinCardProps) {
-  const [price, setPrice] = useState(27942.65);
-  const [change, setChange] = useState(-1521.06);
-
-  // Subtle real-time dynamic ticking for live crypto feel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const delta = (Math.random() - 0.48) * 4.2;
-      setPrice((prev) => +(prev + delta).toFixed(2));
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+export default function CoinCard() {
+  const [displayPrice, setDisplayPrice] = useState("27.942,65");
 
   return (
     <div
       id="axr-coin-card"
-      className="glass-panel-glow rounded-3xl p-6 w-full flex flex-col justify-between border border-[#E03E99]/40 shadow-[0_0_50px_-10px_rgba(224,62,153,0.4)] relative overflow-hidden group min-h-[360px]"
+      className="rounded-2xl p-5 w-full flex flex-col justify-between border border-[#7558ec]/45 shadow-[0_15px_40px_rgba(117,88,236,0.25)] relative overflow-hidden group h-[295px] bg-gradient-to-b from-[#1b1335]/95 to-[#0e0a1c]/95 backdrop-blur-2xl will-change-transform z-20"
     >
       {/* Top Ambient Glow */}
-      <div className="absolute -top-12 -right-12 w-44 h-44 bg-[#E03E99]/30 rounded-full blur-3xl pointer-events-none" />
+      <div
+        id="axr-card-glow"
+        className="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-[#7558ec]/40 to-[#e03e99]/30 rounded-full blur-2xl pointer-events-none"
+      />
 
       {/* Header Info */}
-      <div className="flex items-start justify-between z-10">
+      <div id="axr-card-header" className="flex items-start justify-between z-10 will-change-transform">
         <div>
-          <div className="flex items-center gap-1.5 text-xs text-pink-300 font-semibold tracking-wider uppercase">
-            <Sparkles className="w-3.5 h-3.5 text-[#E03E99]" />
-            <span>Alexandria (AXR)</span>
+          <div className="text-[12.5px] text-[#9ca3af] font-medium tracking-wide">
+            <span id="axr-card-title">Alexandria (AXR)</span>
           </div>
-          <div className="text-3xl font-extrabold text-white tracking-tight mt-1 font-mono">
-            ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          <div
+            id="axr-card-price"
+            className="text-[28px] font-bold text-white tracking-tight mt-0.5 font-mono"
+          >
+            ${displayPrice}
           </div>
-          <div className="flex items-center gap-1 text-xs text-rose-400 font-medium mt-1">
-            <TrendingDown className="w-3 h-3" />
-            <span>
-              {change.toFixed(2)} (-4.18%)
-            </span>
+          <div
+            id="axr-card-change"
+            className="flex items-center gap-1 text-xs text-[#f43f5e] font-medium mt-0.5"
+          >
+            <span id="axr-card-change-text">-1.521,06(1.27%)</span>
+            <TrendingDown className="w-3.5 h-3.5 text-[#f43f5e]" />
           </div>
         </div>
 
         {/* Plus Action Button */}
         <button
-          className="w-9 h-9 rounded-full bg-white text-[#070709] flex items-center justify-center font-bold shadow-[0_0_20px_rgba(255,255,255,0.6)] hover:scale-110 active:scale-95 transition-all"
-          title="Buy / Add AXR"
+          id="axr-plus-btn"
+          className="w-8 h-8 rounded-full bg-white text-[#070709] flex items-center justify-center font-bold shadow-[0_0_15px_rgba(255,255,255,0.7)] hover:scale-110 active:scale-95 transition-all cursor-pointer"
+          title="Add / Buy AXR"
         >
-          <Plus className="w-5 h-5 stroke-[2.5]" />
+          <Plus className="w-4 h-4 stroke-[2.5]" />
         </button>
       </div>
 
       {/* Center 3D WebGL Holographic Coin Canvas */}
-      <div className="relative flex-1 flex items-center justify-center py-2 z-10 min-h-[190px]">
-        <AlexandriaCoin3D size={240} className="scale-110" />
-      </div>
-
-      {/* Bottom Progress Telemetry */}
-      <div className="z-10 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-gray-300">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[11px] font-medium text-gray-400">Live Telemetry</span>
-        </div>
-        <span className="text-[11px] font-mono text-pink-300">Target: $32,000.00</span>
+      <div
+        id="axr-coin-3d-wrapper"
+        className="relative flex-1 flex items-center justify-center mt-1 z-10 overflow-hidden will-change-transform"
+      >
+        <AlexandriaCoin3D size={220} className="scale-110" />
       </div>
     </div>
   );

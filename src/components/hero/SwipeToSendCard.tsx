@@ -1,67 +1,33 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { ChevronsRight, Check } from "lucide-react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
 
 export default function SwipeToSendCard() {
-  const [isSent, setIsSent] = useState(false);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
+  const [swiped, setSwiped] = useState(false);
 
-  const maxDrag = 150; // max track drag in px
-  const opacity = useTransform(x, [0, maxDrag * 0.7], [1, 0.2]);
-
-  const handleDragEnd = () => {
-    if (x.get() > maxDrag * 0.7) {
-      setIsSent(true);
-      setTimeout(() => {
-        setIsSent(false);
-        x.set(0);
-      }, 2500);
-    } else {
-      x.set(0);
-    }
+  const handleSwipe = () => {
+    setSwiped(true);
+    setTimeout(() => setSwiped(false), 2500);
   };
 
   return (
-    <div className="glass-card rounded-2xl p-4 w-full flex flex-col justify-center border border-white/10 shadow-2xl relative overflow-hidden">
+    <div className="w-full">
       <div
-        ref={trackRef}
-        className={`relative h-12 rounded-full p-1 flex items-center transition-all overflow-hidden ${
-          isSent
-            ? "bg-emerald-500/20 border border-emerald-500/40"
-            : "bg-[#14131d] border border-white/10"
-        }`}
+        onClick={handleSwipe}
+        className="w-full h-11 rounded-full bg-[#120f1c]/90 border border-white/[0.08] p-0.5 flex items-center justify-between shadow-[0_8px_20px_rgba(0,0,0,0.6)] cursor-pointer hover:border-[#E03E99]/50 transition-all select-none group backdrop-blur-xl"
       >
-        {/* Placeholder Text */}
-        <motion.div
-          style={{ opacity }}
-          className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-400 select-none pointer-events-none"
-        >
-          {isSent ? (
-            <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
-              <Check className="w-4 h-4" /> Transfer Completed!
-            </span>
-          ) : (
-            "Swipe to Start Send"
-          )}
-        </motion.div>
+        <span className="pl-4 text-xs font-normal text-[#cbd5e1] group-hover:text-white transition-colors">
+          {swiped ? "Transaction Initiated!" : "Swipe to Start Send"}
+        </span>
 
-        {/* Draggable Glowing Thumb */}
-        {!isSent && (
-          <motion.div
-            drag="x"
-            dragConstraints={{ left: 0, right: maxDrag }}
-            dragElastic={0.1}
-            dragSnapToOrigin
-            style={{ x }}
-            onDragEnd={handleDragEnd}
-            className="w-10 h-10 rounded-full bg-gradient-to-r from-[#E03E99] to-[#7928CA] shadow-[0_0_20px_rgba(224,62,153,0.8)] flex items-center justify-center cursor-grab active:cursor-grabbing z-10 select-none hover:scale-105"
-          >
-            <ChevronsRight className="w-5 h-5 text-white" />
-          </motion.div>
-        )}
+        <div className="w-9 h-9 rounded-full bg-gradient-to-r from-[#903aff] to-[#e03e99] flex items-center justify-center shadow-[0_0_15px_rgba(224,62,153,0.6)] group-hover:scale-105 active:scale-95 transition-transform flex-shrink-0">
+          {swiped ? (
+            <Check className="w-3.5 h-3.5 text-white" />
+          ) : (
+            <ChevronsRight className="w-3.5 h-3.5 text-white" />
+          )}
+        </div>
       </div>
     </div>
   );

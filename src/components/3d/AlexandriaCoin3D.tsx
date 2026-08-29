@@ -6,11 +6,13 @@ import * as THREE from "three";
 interface AlexandriaCoin3DProps {
   className?: string;
   size?: number;
+  interactive?: boolean;
 }
 
 export default function AlexandriaCoin3D({
   className = "",
   size = 280,
+  interactive = true,
 }: AlexandriaCoin3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0, isHovered: false });
@@ -26,18 +28,18 @@ export default function AlexandriaCoin3D({
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(0, 0, 4.8);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.3;
     container.appendChild(renderer.domElement);
 
-    // Coin Group
+    // Main Coin Group
     const coinGroup = new THREE.Group();
     scene.add(coinGroup);
 
-    // Custom GLSL Shaders
+    // Vertex Shader
     const vertexShader = `
       varying vec3 vNormal;
       varying vec3 vViewPosition;
@@ -54,7 +56,8 @@ export default function AlexandriaCoin3D({
       }
     `;
 
-    const fragmentShader = `
+    // Fragment Shader for Coin Body (Lavender / Violet Metallic with Fresnel)
+    const coinFragmentShader = `
       uniform float uTime;
       uniform vec2 uMouse;
       uniform vec3 uBaseColor;
@@ -70,122 +73,144 @@ export default function AlexandriaCoin3D({
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
 
-        // Light setup
-        vec3 lightDir = normalize(vec3(0.5 + uMouse.x * 0.5, 0.8 + uMouse.y * 0.5, 1.0));
-        vec3 lightDir2 = normalize(vec3(-0.8, -0.4, 0.5));
+        vec3 lightDir1 = normalize(vec3(0.6 + uMouse.x * 0.4, 0.8 + uMouse.y * 0.4, 1.2));
+        vec3 lightDir2 = normalize(vec3(-0.8, -0.4, 0.6));
 
-        // Diffuse
-        float diff = max(dot(normal, lightDir), 0.0);
+        float diff1 = max(dot(normal, lightDir1), 0.0);
         float diff2 = max(dot(normal, lightDir2), 0.0) * 0.4;
 
-        // Specular & Anisotropic sheen
-        vec3 halfDir = normalize(lightDir + viewDir);
+        vec3 halfDir = normalize(lightDir1 + viewDir);
         float spec = pow(max(dot(normal, halfDir), 0.0), 32.0);
-        
-        // Anisotropic highlight reflection
+
         vec3 anisoDir = normalize(vec3(-normal.y, normal.x, 0.0));
         float aniso = pow(max(abs(dot(anisoDir, halfDir)), 0.0), 16.0) * 0.35;
 
-        // Fresnel Edge Glow
-        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.5);
 
-        // Chromatic Rainbow Dispersion on bevel edges
-        vec3 chromatic = vec3(
-          0.5 + 0.5 * sin(uTime * 1.5 + vUv.x * 6.28),
-          0.5 + 0.5 * cos(uTime * 1.5 + vUv.y * 6.28 + 2.094),
-          0.5 + 0.5 * sin(uTime * 1.5 + (vUv.x + vUv.y) * 3.14 + 4.188)
-        );
-
-        // Dynamic Glint Beam reacting to mouse
-        float mouseDist = distance(vUv, vec2(0.5 + uMouse.x * 0.3, 0.5 - uMouse.y * 0.3));
-        float glint = exp(-mouseDist * 6.0) * 0.8;
-
-        // Base shading composite
-        vec3 base = mix(uBaseColor, vec3(0.85, 0.88, 0.98), diff * 0.5 + diff2);
-        vec3 finalColor = base + (spec + aniso) * uGlintColor * 1.2;
-        finalColor += fresnel * uRimColor * 1.8;
-        finalColor += chromatic * fresnel * 0.7;
-        finalColor += glint * uGlintColor;
+        vec3 base = mix(uBaseColor, vec3(0.92, 0.90, 1.0), (diff1 + diff2) * 0.6);
+        vec3 finalColor = base + (spec * 1.1 + aniso) * uGlintColor;
+        finalColor += fresnel * uRimColor * 1.6;
 
         gl_FragColor = vec4(finalColor, 1.0);
       }
     `;
 
-    const shaderMaterial = new THREE.ShaderMaterial({
+    // Fragment Shader for White Diamond Emblem
+    const emblemFragmentShader = `
+      uniform float uTime;
+      uniform vec2 uMouse;
+
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
+      varying vec2 vUv;
+
+      void main() {
+        vec3 normal = normalize(vNormal);
+        vec3 viewDir = normalize(vViewPosition);
+
+        vec3 lightDir = normalize(vec3(0.5 + uMouse.x * 0.3, 0.8 + uMouse.y * 0.3, 1.2));
+        float diff = max(dot(normal, lightDir), 0.0);
+
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(normal, halfDir), 0.0), 48.0);
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
+
+        vec3 baseWhite = vec3(0.98, 0.98, 1.0);
+        vec3 finalColor = baseWhite * (0.85 + diff * 0.25) + spec * vec3(1.0) * 1.2 + fresnel * vec3(0.7, 0.6, 1.0) * 0.5;
+
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    // Lavender/Violet body material matching reference image 2
+    const coinMaterial = new THREE.ShaderMaterial({
       vertexShader,
-      fragmentShader,
+      fragmentShader: coinFragmentShader,
       uniforms: {
         uTime: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },
-        uBaseColor: { value: new THREE.Color("#6328a6") },
-        uRimColor: { value: new THREE.Color("#E03E99") },
+        uBaseColor: { value: new THREE.Color("#7b61f2") }, // Lavender/Purple matching Image 2
+        uRimColor: { value: new THREE.Color("#dcc7ff") },
         uGlintColor: { value: new THREE.Color("#ffffff") },
       },
       side: THREE.DoubleSide,
     });
 
-    // 1. Cylinder Base Coin
-    const coinGeometry = new THREE.CylinderGeometry(1.4, 1.4, 0.18, 64);
-    const coinMesh = new THREE.Mesh(coinGeometry, shaderMaterial);
+    // Pure White Diamond material
+    const emblemMaterial = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader: emblemFragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+      },
+      side: THREE.DoubleSide,
+    });
+
+    // 1. Cylinder Base Coin (Chunky luxury 3D token matching Image 2)
+    const coinGeometry = new THREE.CylinderGeometry(1.4, 1.4, 0.26, 64);
+    const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
     coinMesh.rotation.x = Math.PI / 2;
     coinGroup.add(coinMesh);
 
     // 2. Outer Rim Ring with Chamfer
-    const torusGeometry = new THREE.TorusGeometry(1.41, 0.08, 32, 64);
-    const torusMesh = new THREE.Mesh(torusGeometry, shaderMaterial);
+    const torusGeometry = new THREE.TorusGeometry(1.41, 0.12, 32, 64);
+    const torusMesh = new THREE.Mesh(torusGeometry, coinMaterial);
     coinGroup.add(torusMesh);
 
     // 3. Inner Beveled Emblem Ring
-    const innerRingGeo = new THREE.TorusGeometry(1.22, 0.04, 24, 64);
-    const innerRingMesh = new THREE.Mesh(innerRingGeo, shaderMaterial);
+    const innerRingGeo = new THREE.TorusGeometry(1.22, 0.05, 24, 64);
+    const innerRingMesh = new THREE.Mesh(innerRingGeo, coinMaterial);
     coinGroup.add(innerRingMesh);
 
-    // 4. Extruded Alexandria Diamond Shape
+    // 4. Extruded Alexandria White Diamond Shape
     const diamondShape = new THREE.Shape();
-    diamondShape.moveTo(0, 0.7);
-    diamondShape.lineTo(0.55, 0.0);
-    diamondShape.lineTo(0, -0.7);
-    diamondShape.lineTo(-0.55, 0.0);
+    diamondShape.moveTo(0, 0.72);
+    diamondShape.lineTo(0.58, 0.0);
+    diamondShape.lineTo(0, -0.72);
+    diamondShape.lineTo(-0.58, 0.0);
     diamondShape.closePath();
 
-    // Inner cutout diamond for geometric depth
+    // Inner cutout diamond
     const holeShape = new THREE.Path();
-    holeShape.moveTo(0, 0.42);
-    holeShape.lineTo(0.32, 0.0);
-    holeShape.lineTo(0, -0.42);
-    holeShape.lineTo(-0.32, 0.0);
+    holeShape.moveTo(0, 0.44);
+    holeShape.lineTo(0.34, 0.0);
+    holeShape.lineTo(0, -0.44);
+    holeShape.lineTo(-0.34, 0.0);
     holeShape.closePath();
     diamondShape.holes.push(holeShape);
 
     const extrudeSettings = {
       steps: 1,
-      depth: 0.12,
+      depth: 0.22,
       bevelEnabled: true,
-      bevelThickness: 0.04,
-      bevelSize: 0.03,
-      bevelSegments: 4,
+      bevelThickness: 0.05,
+      bevelSize: 0.04,
+      bevelSegments: 5,
     };
 
     const diamondGeometry = new THREE.ExtrudeGeometry(diamondShape, extrudeSettings);
     diamondGeometry.center();
 
-    // Front Emblem
-    const frontEmblem = new THREE.Mesh(diamondGeometry, shaderMaterial);
-    frontEmblem.position.z = 0.11;
+    // Front White Emblem
+    const frontEmblem = new THREE.Mesh(diamondGeometry, emblemMaterial);
+    frontEmblem.position.z = 0.16;
     coinGroup.add(frontEmblem);
 
-    // Back Emblem
-    const backEmblem = new THREE.Mesh(diamondGeometry, shaderMaterial);
-    backEmblem.position.z = -0.11;
+    // Back White Emblem
+    const backEmblem = new THREE.Mesh(diamondGeometry, emblemMaterial);
+    backEmblem.position.z = -0.16;
     backEmblem.rotation.y = Math.PI;
     coinGroup.add(backEmblem);
 
-    // Tilt angle
-    coinGroup.rotation.x = 0.25;
-    coinGroup.rotation.y = -0.3;
+    // Default 3D isometric tilt (matching Image 2)
+    coinGroup.rotation.x = 0.35;
+    coinGroup.rotation.y = -0.42;
+    coinGroup.rotation.z = 0.12;
 
     // Mouse Interaction handlers
     const handlePointerMove = (e: MouseEvent) => {
+      if (!interactive) return;
       const rect = container.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
@@ -203,9 +228,11 @@ export default function AlexandriaCoin3D({
       mouseRef.current.targetY = 0;
     };
 
-    container.addEventListener("mousemove", handlePointerMove);
-    container.addEventListener("mouseenter", handleMouseEnter);
-    container.addEventListener("mouseleave", handleMouseLeave);
+    if (interactive) {
+      container.addEventListener("mousemove", handlePointerMove);
+      container.addEventListener("mouseenter", handleMouseEnter);
+      container.addEventListener("mouseleave", handleMouseLeave);
+    }
 
     const handleResize = () => {
       if (!container) return;
@@ -218,26 +245,28 @@ export default function AlexandriaCoin3D({
 
     window.addEventListener("resize", handleResize);
 
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
     let animationFrameId: number;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Smooth interpolation for mouse interaction
+      // Smooth spring interpolation
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.08;
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.08;
 
-      // Continuous gentle rotation + mouse tilt
-      const baseRotY = -0.3 + Math.sin(elapsedTime * 0.8) * 0.2;
-      coinGroup.rotation.y = baseRotY + mouseRef.current.x * 0.7;
-      coinGroup.rotation.x = 0.25 - mouseRef.current.y * 0.6;
-      coinGroup.rotation.z = Math.sin(elapsedTime * 0.5) * 0.05 + mouseRef.current.x * 0.2;
+      // Continuous gentle rotation + mouse tilt matching isometric reference
+      const baseRotY = -0.42 + Math.sin(elapsedTime * 0.5) * 0.06;
+      coinGroup.rotation.y = baseRotY + mouseRef.current.x * 0.35;
+      coinGroup.rotation.x = 0.35 - mouseRef.current.y * 0.3;
+      coinGroup.rotation.z = 0.12 + Math.sin(elapsedTime * 0.4) * 0.02 + mouseRef.current.x * 0.08;
 
       // Update uniforms
-      shaderMaterial.uniforms.uTime.value = elapsedTime;
-      shaderMaterial.uniforms.uMouse.value.set(mouseRef.current.x, mouseRef.current.y);
+      coinMaterial.uniforms.uTime.value = elapsedTime;
+      coinMaterial.uniforms.uMouse.value.set(mouseRef.current.x, mouseRef.current.y);
+      emblemMaterial.uniforms.uTime.value = elapsedTime;
+      emblemMaterial.uniforms.uMouse.value.set(mouseRef.current.x, mouseRef.current.y);
 
       renderer.render(scene, camera);
     };
@@ -245,9 +274,11 @@ export default function AlexandriaCoin3D({
     animate();
 
     return () => {
-      container.removeEventListener("mousemove", handlePointerMove);
-      container.removeEventListener("mouseenter", handleMouseEnter);
-      container.removeEventListener("mouseleave", handleMouseLeave);
+      if (interactive) {
+        container.removeEventListener("mousemove", handlePointerMove);
+        container.removeEventListener("mouseenter", handleMouseEnter);
+        container.removeEventListener("mouseleave", handleMouseLeave);
+      }
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
       if (container.contains(renderer.domElement)) {
@@ -257,10 +288,11 @@ export default function AlexandriaCoin3D({
       torusGeometry.dispose();
       innerRingGeo.dispose();
       diamondGeometry.dispose();
-      shaderMaterial.dispose();
+      coinMaterial.dispose();
+      emblemMaterial.dispose();
       renderer.dispose();
     };
-  }, [size]);
+  }, [size, interactive]);
 
   return (
     <div

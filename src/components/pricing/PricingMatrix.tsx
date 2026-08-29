@@ -1,9 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Check, ChevronRight, Sparkles } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function PricingMatrix() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
   const plans = [
     {
       name: "Basic Plan",
@@ -58,10 +67,43 @@ export default function PricingMatrix() {
     },
   ];
 
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
+
+      gsap.set(cards, {
+        opacity: 0,
+        y: 40,
+        scale: 0.94,
+      });
+
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        stagger: 0.12,
+        duration: 1.0,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="pricing" className="relative w-full py-24 px-4 max-w-7xl mx-auto flex flex-col items-center">
+    <section
+      id="pricing"
+      ref={sectionRef}
+      className="relative w-full py-24 px-4 max-w-7xl mx-auto flex flex-col items-center"
+    >
       {/* Background radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-r from-[#7928CA]/20 to-[#E03E99]/20 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-gradient-to-r from-[#7928CA]/25 via-[#E03E99]/20 to-[#7928CA]/25 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto mb-16 z-10">
@@ -76,18 +118,21 @@ export default function PricingMatrix() {
 
       {/* 3 Pricing Cards Grid */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch z-10">
-        {plans.map((plan) => (
+        {plans.map((plan, idx) => (
           <div
             key={plan.name}
-            className={`rounded-3xl flex flex-col justify-between p-8 transition-all duration-300 relative ${
+            ref={(el) => {
+              cardsRef.current[idx] = el;
+            }}
+            className={`rounded-3xl flex flex-col justify-between p-8 transition-all duration-300 relative will-change-transform ${
               plan.isPopular
-                ? "bg-[#161322]/95 border-2 border-[#E03E99] shadow-[0_0_50px_rgba(224,62,153,0.4)] scale-105 z-20"
+                ? "bg-[#161322]/95 border-2 border-[#E03E99] shadow-[0_0_60px_rgba(224,62,153,0.45)] scale-105 z-20"
                 : "glass-card border border-white/10 hover:border-white/20"
             }`}
           >
             {/* Top Best Seller Badge for Pro Plan */}
             {plan.isPopular && (
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#E03E99] to-[#7928CA] text-white text-xs font-bold flex items-center gap-1.5 shadow-[0_0_20px_rgba(224,62,153,0.8)] uppercase tracking-wider">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#E03E99] to-[#7928CA] text-white text-xs font-bold flex items-center gap-1.5 shadow-[0_0_25px_rgba(224,62,153,0.85)] uppercase tracking-wider animate-pulse">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{plan.badge}</span>
               </div>

@@ -1,28 +1,68 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function MarketScannerCard() {
   const [scanPercentage, setScanPercentage] = useState(37.9);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef({ val: 37.9 });
 
-  // Dynamic percentage ramp-up loop: 37.9% -> 82.8% -> 96.7%
   useEffect(() => {
-    const targets = [37.9, 64.2, 83.9, 96.7];
-    let index = 0;
+    if (!cardRef.current) return;
 
+    // Scroll-driven ramping timeline: 37.9% -> 82.8% -> 96.7%
+    const ctx = gsap.context(() => {
+      gsap.to(numberRef.current, {
+        val: 96.7,
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 80%",
+          end: "center 40%",
+          scrub: 1.0,
+          onUpdate: () => {
+            setScanPercentage(numberRef.current.val);
+          },
+        },
+      });
+    }, cardRef);
+
+    // Continuous loop if idle
+    const targets = [37.9, 64.2, 82.8, 96.7];
+    let idx = 0;
     const interval = setInterval(() => {
-      index = (index + 1) % targets.length;
-      setScanPercentage(targets[index]);
-    }, 2200);
+      if (!ScrollTrigger.isScrolling()) {
+        idx = (idx + 1) % targets.length;
+        gsap.to(numberRef.current, {
+          val: targets[idx],
+          duration: 1.2,
+          ease: "power2.out",
+          onUpdate: () => {
+            setScanPercentage(numberRef.current.val);
+          },
+        });
+      }
+    }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      ctx.revert();
+    };
   }, []);
 
   const bars = [25, 45, 80, 55, 95, 70, 40, 85, 60, 90, 50, 75];
 
   return (
-    <div className="glass-card rounded-3xl p-7 flex flex-col justify-between border border-white/10 shadow-2xl relative overflow-hidden group min-h-[380px]">
+    <div
+      ref={cardRef}
+      className="glass-card rounded-3xl p-7 flex flex-col justify-between border border-white/10 shadow-2xl relative overflow-hidden group min-h-[380px]"
+    >
       {/* Visual: Bar Chart with Magnifying Reticle Scanner */}
       <div className="relative flex-1 flex items-center justify-center py-4 w-full">
         {/* Bar Chart Foundation */}
@@ -43,8 +83,8 @@ export default function MarketScannerCard() {
             );
           })}
 
-          {/* Floating Neon Magnifier Reticle (Centered over main scan bar) */}
-          <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-pink-400/80 backdrop-blur-md bg-[#161226]/80 shadow-[0_0_35px_rgba(224,62,153,0.5)] flex flex-col items-center justify-center z-20 animate-pulse">
+          {/* Floating Neon Magnifier Reticle */}
+          <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-pink-400/80 backdrop-blur-md bg-[#161226]/85 shadow-[0_0_40px_rgba(224,62,153,0.6)] flex flex-col items-center justify-center z-20 animate-pulse">
             <div className="text-2xl font-bold font-mono text-white tracking-tight">
               {scanPercentage.toFixed(1)}%
             </div>

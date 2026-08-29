@@ -80,9 +80,8 @@ export default function InsightsAccordion() {
             const isOpen = openIndex === index;
 
             return (
-              <motion.div
+              <div
                 key={item.id}
-                layout
                 className="py-6 transition-colors duration-200"
               >
                 {/* Header Row */}
@@ -90,9 +89,9 @@ export default function InsightsAccordion() {
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="flex items-center justify-between cursor-pointer group select-none"
                 >
-                  <div className="flex flex-col">
+                  <div className="flex flex-col pr-4">
                     {isOpen && item.date && (
-                      <span className="text-[11px] font-mono text-gray-400 mb-1">
+                      <span className="text-[11px] font-mono text-pink-300/90 mb-1">
                         {item.date}
                       </span>
                     )}
@@ -106,7 +105,7 @@ export default function InsightsAccordion() {
                   </div>
 
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all flex-shrink-0 ${
                       isOpen
                         ? "bg-[#E03E99]/20 border-[#E03E99] text-[#E03E99] rotate-90"
                         : "bg-white/5 border-white/10 text-gray-400 group-hover:border-white/30 group-hover:text-white"
@@ -140,7 +139,7 @@ export default function InsightsAccordion() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
         </div>

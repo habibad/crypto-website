@@ -15,39 +15,37 @@ import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full bg-[#070709] text-gray-100 flex flex-col overflow-x-hidden">
-      {/* 3D Additive Starfield Particle Background */}
-      <StarfieldCanvas />
+    /* Outer wrapper: very dark bg like reference (almost black #060508) */
+    <div className="w-full bg-[#060508] flex flex-col">
 
-      {/* Sticky Floating Navbar */}
+      {/* ── Navbar ── sits on the dark outer bg, NOT inside the hero frame */}
       <Navbar />
 
-      {/* 1. Hero Section with GSAP Macro-Zoom Unfolding Grid */}
-      <HeroSection />
+      {/* ── Hero Frame Container ── rounded dark card with visible border on 1536px basis */}
+      <div className="w-full max-w-[1560px] mx-auto px-3 sm:px-6 lg:px-8 mb-16">
+        <div
+          className="relative w-full overflow-hidden rounded-[32px] border border-white/[0.09] shadow-[0_25px_90px_rgba(0,0,0,0.85)] min-h-[calc(100vh-84px)] flex flex-col justify-between"
+          style={{ background: "linear-gradient(175deg, #100b1d 0%, #080610 40%, #0b0916 100%)" }}
+        >
+          {/* Starfield particle bg layer */}
+          <StarfieldCanvas />
 
-      {/* 2. Convex Curved Orbit Arc */}
-      <CryptoOrbitArc />
+          {/* Hero section: aurora glow + headline + email + bento grid */}
+          <HeroSection />
+        </div>
+      </div>
 
-      {/* 3. AI Processing Hub (Microchip & Orthogonal 90-Degree Circuit Traces) */}
-      <AIProcessingHub />
-
-      {/* 4. Risk Strategies Process Stepper Pipeline */}
-      <RiskStrategiesStepper />
-
-      {/* 5. The Optimized AI Engine 2x2 Matrix */}
-      <OptimizedEngineMatrix />
-
-      {/* 6. Pricing Matrix (3 Tiers with Pro Best Seller glow) */}
-      <PricingMatrix />
-
-      {/* 7. Interactive Logs & Insights Accordion */}
-      <InsightsAccordion />
-
-      {/* 8. High-Impact Nebula Call to Action */}
-      <HighImpactCTA />
-
-      {/* 9. Mega Footer with Giant QUANTRA Watermark */}
-      <Footer />
-    </main>
+      {/* ── Rest of page ── below the hero frame */}
+      <main className="relative w-full bg-[#070709] text-gray-100 flex flex-col overflow-x-hidden">
+        <CryptoOrbitArc />
+        <AIProcessingHub />
+        <RiskStrategiesStepper />
+        <OptimizedEngineMatrix />
+        <PricingMatrix />
+        <InsightsAccordion />
+        <HighImpactCTA />
+        <Footer />
+      </main>
+    </div>
   );
 }
