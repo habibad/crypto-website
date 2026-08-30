@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import HeroUnfoldingGrid from "./HeroUnfoldingGrid";
 import HeroVideoPreloader from "./HeroVideoPreloader";
@@ -9,7 +9,25 @@ export default function HeroSection() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [preloaderActive, setPreloaderActive] = useState(true);
+  const [isHeroReady, setIsHeroReady] = useState(false);
   const [replayCount] = useState(0);
+
+  const handleStartTransition = () => {
+    setIsHeroReady(true);
+  };
+
+  const handlePreloaderComplete = () => {
+    setPreloaderActive(false);
+    setIsHeroReady(true);
+  };
+
+  useEffect(() => {
+    // If preloader is bypassed or on fast load
+    const fallbackTimer = setTimeout(() => {
+      setIsHeroReady(true);
+    }, 4500);
+    return () => clearTimeout(fallbackTimer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +43,8 @@ export default function HeroSection() {
       {preloaderActive && (
         <HeroVideoPreloader
           key={replayCount}
-          onPreloaderTransitionStart={() => {}}
-          onPreloaderComplete={() => setPreloaderActive(false)}
+          onPreloaderTransitionStart={handleStartTransition}
+          onPreloaderComplete={handlePreloaderComplete}
           isReplaying={replayCount > 0}
         />
       )}
@@ -230,12 +248,16 @@ export default function HeroSection() {
 
         {/* Headline — Light, elegant, modern geometric typography matching Reference Image 2 */}
         <h1
-          className="text-white leading-[1.12] tracking-[-0.02em] max-w-[760px]"
+          className="text-white leading-[1.12] tracking-[-0.02em] max-w-[760px] will-change-transform"
           style={{
             fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
             fontSize: "clamp(42px, 4.8vw, 62px)",
             fontWeight: 400,
             letterSpacing: "-0.02em",
+            transform: isHeroReady ? "translateY(0) scale(1)" : "translateY(35px) scale(0.97)",
+            opacity: isHeroReady ? 1 : 0,
+            filter: isHeroReady ? "blur(0px)" : "blur(8px)",
+            transition: "transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, filter 1s ease-out 0.1s",
           }}
         >
           Invest Crypto Smarter
@@ -244,10 +266,13 @@ export default function HeroSection() {
 
         {/* Subtitle */}
         <p
-          className="mt-3.5 text-[15px] sm:text-[16px] text-[#a1a7b8] leading-relaxed max-w-[580px]"
+          className="mt-3.5 text-[15px] sm:text-[16px] text-[#a1a7b8] leading-relaxed max-w-[580px] will-change-transform"
           style={{
             fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
             fontWeight: 300,
+            transform: isHeroReady ? "translateY(0)" : "translateY(25px)",
+            opacity: isHeroReady ? 1 : 0,
+            transition: "transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s",
           }}
         >
           Explore market opportunities and grow your portfolio with AI insights.
@@ -256,7 +281,12 @@ export default function HeroSection() {
         {/* ── Unified Email Subscribe Pill Capsule (matching Reference Image 2) ── */}
         <form
           onSubmit={handleSubmit}
-          className="mt-6 flex items-center justify-between w-full max-w-[460px] h-[48px] p-1.5 rounded-full border border-white/[0.12] bg-[#120e1d]/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
+          className="mt-6 flex items-center justify-between w-full max-w-[460px] h-[48px] p-1.5 rounded-full border border-white/[0.12] bg-[#120e1d]/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.7)] will-change-transform"
+          style={{
+            transform: isHeroReady ? "translateY(0) scale(1)" : "translateY(25px) scale(0.96)",
+            opacity: isHeroReady ? 1 : 0,
+            transition: "transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.38s, opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.38s",
+          }}
         >
           {/* Input field inside pill */}
           <input
@@ -290,7 +320,7 @@ export default function HeroSection() {
       {/* ══════════════════════════════════════════════════════
           BENTO CARD GRID (MATCHING REFERENCE IMAGE 2)
       ══════════════════════════════════════════════════════ */}
-      <HeroUnfoldingGrid />
+      <HeroUnfoldingGrid isHeroReady={isHeroReady} />
     </section>
   );
 }

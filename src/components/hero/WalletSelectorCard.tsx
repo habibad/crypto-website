@@ -2,12 +2,17 @@
 
 import React, { useState } from "react";
 import { ArrowLeftRight, CreditCard, Wallet2 } from "lucide-react";
+import { useLiveCounter } from "@/hooks/useLiveCounter";
 
 export default function WalletSelectorCard() {
   const [selectedMethod, setSelectedMethod] = useState<"cash" | "debit">("cash");
 
+  const animatedTotal = useLiveCounter({ end: 10840, duration: 1600, delay: 500 });
+  const animatedCash = useLiveCounter({ end: 5500, duration: 1400, delay: 600 });
+  const animatedDebit = useLiveCounter({ end: 5340, duration: 1400, delay: 600 });
+
   return (
-    <div className="rounded-2xl p-5 w-full flex flex-col justify-between border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden bg-[#120f1c]/90 backdrop-blur-xl h-[175px] select-none">
+    <div className="rounded-2xl p-5 w-full flex flex-col justify-between border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden bg-[#120f1c]/90 backdrop-blur-xl h-[175px] select-none group transition-all duration-300 hover:border-white/15">
       {/* Header */}
       <div className="flex items-center justify-between">
         <span
@@ -27,10 +32,10 @@ export default function WalletSelectorCard() {
 
       {/* Main Balance */}
       <div
-        className="text-[25px] font-bold text-white tracking-tight mt-0.5"
+        className="text-[25px] font-bold text-white tracking-tight mt-0.5 tabular-nums"
         style={{ fontFamily: "var(--font-outfit), sans-serif" }}
       >
-        $10.840
+        {animatedTotal}
       </div>
 
       {/* Interactive Switch Center Pill */}
@@ -38,7 +43,7 @@ export default function WalletSelectorCard() {
         <button
           type="button"
           onClick={() => setSelectedMethod((prev) => (prev === "cash" ? "debit" : "cash"))}
-          className="w-6.5 h-6.5 rounded-full bg-gradient-to-r from-[#7928CA] to-[#E03E99] p-0.5 shadow-[0_0_12px_rgba(224,62,153,0.55)] flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
+          className="w-6.5 h-6.5 rounded-full bg-gradient-to-r from-[#7928CA] to-[#E03E99] p-0.5 shadow-[0_0_12px_rgba(224,62,153,0.55)] flex items-center justify-center hover:scale-110 active:scale-95 transition-transform cursor-pointer"
           title="Switch Payment Source"
         >
           <ArrowLeftRight className="w-3.5 h-3.5 text-white" />
@@ -53,7 +58,7 @@ export default function WalletSelectorCard() {
           onClick={() => setSelectedMethod("cash")}
           className={`p-2.5 rounded-xl border flex flex-col items-start gap-0.5 transition-all text-left cursor-pointer ${
             selectedMethod === "cash"
-              ? "bg-[#E03E99]/15 border-[#E03E99]/60 shadow-[0_0_12px_rgba(224,62,153,0.25)]"
+              ? "bg-[#E03E99]/15 border-[#E03E99]/60 shadow-[0_0_12px_rgba(224,62,153,0.25)] scale-[1.02]"
               : "bg-white/5 border-white/10 opacity-70 hover:opacity-100"
           }`}
         >
@@ -62,10 +67,10 @@ export default function WalletSelectorCard() {
             <span style={{ fontFamily: "var(--font-outfit), sans-serif" }}>Digital Cash</span>
           </div>
           <span
-            className="text-[13px] font-bold text-white"
+            className="text-[13px] font-bold text-white tabular-nums"
             style={{ fontFamily: "var(--font-outfit), sans-serif" }}
           >
-            $5.500
+            {animatedCash}
           </span>
         </button>
 
@@ -75,7 +80,7 @@ export default function WalletSelectorCard() {
           onClick={() => setSelectedMethod("debit")}
           className={`p-2.5 rounded-xl border flex flex-col items-start gap-0.5 transition-all text-left cursor-pointer ${
             selectedMethod === "debit"
-              ? "bg-[#7928CA]/20 border-[#7928CA]/60 shadow-[0_0_12px_rgba(121,40,202,0.25)]"
+              ? "bg-[#7928CA]/20 border-[#7928CA]/60 shadow-[0_0_12px_rgba(121,40,202,0.25)] scale-[1.02]"
               : "bg-white/5 border-white/10 opacity-70 hover:opacity-100"
           }`}
         >
@@ -84,14 +89,15 @@ export default function WalletSelectorCard() {
             <span style={{ fontFamily: "var(--font-outfit), sans-serif" }}>Debit Card</span>
           </div>
           <span
-            className="text-[13px] font-bold text-white"
+            className="text-[13px] font-bold text-white tabular-nums"
             style={{ fontFamily: "var(--font-outfit), sans-serif" }}
           >
-            $5.340
+            {animatedDebit}
           </span>
         </button>
       </div>
     </div>
   );
 }
+
 

@@ -14,7 +14,11 @@ import CyberpunkAvatarCard from "./CyberpunkAvatarCard";
 import TransactionRoutingCard from "./TransactionRoutingCard";
 import SwipeToSendCard from "./SwipeToSendCard";
 
-export default function HeroUnfoldingGrid() {
+interface HeroUnfoldingGridProps {
+  isHeroReady?: boolean;
+}
+
+export default function HeroUnfoldingGrid({ isHeroReady = true }: HeroUnfoldingGridProps) {
   return (
     <div className="relative w-full overflow-visible pt-1 pb-6">
 
@@ -34,7 +38,8 @@ export default function HeroUnfoldingGrid() {
               "radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 100%)",
             WebkitMaskImage:
               "radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 100%)",
-            opacity: 0.5,
+            opacity: isHeroReady ? 0.5 : 0,
+            transition: "opacity 1.5s ease-out 0.4s",
           }}
         />
       </div>
@@ -52,10 +57,14 @@ export default function HeroUnfoldingGrid() {
 
         {/* ── PROFESSIONAL LUXURY 3D WIREFRAME BOXES & NEON MATRIX (EDGE TO EDGE) ── */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
+          className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible will-change-transform"
           viewBox="0 0 1440 510"
           preserveAspectRatio="none"
           fill="none"
+          style={{
+            opacity: isHeroReady ? 1 : 0,
+            transition: "opacity 1.6s ease-out 0.4s",
+          }}
         >
           {/* ── 1. LEFT ISOMETRIC CORRIDOR (ENTRANCE FROM FAR LEFT FRAME WALL) ── */}
           <path
@@ -192,32 +201,67 @@ export default function HeroUnfoldingGrid() {
 
           <div className="dashboard-5col w-full">
             {/* ─── COLUMN 1: [Box 1: Portfolio (205px)] + [Box 2: Quote (160px)] (Far Left) ─── */}
-            <div className="flex flex-col gap-3.5 lg:mt-7">
+            <div
+              className="flex flex-col gap-3.5 lg:mt-7 will-change-transform"
+              style={{
+                transform: isHeroReady ? "translateY(0)" : "translateY(60px)",
+                opacity: isHeroReady ? 1 : 0,
+                transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.55s, opacity 1s ease-out 0.55s",
+              }}
+            >
               <WeeklyBalanceCard />
               <QuoteCard />
             </div>
 
             {/* ─── COLUMN 2: [Box 3: Secured (Wide & Flat 145px)] + [Box 4: Investment Style (200px)] (Center-Left: Shifted Down) ─── */}
-            <div className="flex flex-col gap-3.5 lg:mt-16">
+            <div
+              className="flex flex-col gap-3.5 lg:mt-16 will-change-transform"
+              style={{
+                transform: isHeroReady ? "translateY(0)" : "translateY(60px)",
+                opacity: isHeroReady ? 1 : 0,
+                transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, opacity 1s ease-out 0.42s",
+              }}
+            >
               <SecuredEcosystemCard />
               <InvestmentGaugeCard />
             </div>
 
             {/* ─── COLUMN 3: [Box 5: Alexandria Coin (Tall Hero 305px)] + [Box 6: My Wallet (175px)] (Center Anchor: Elevated Hero) ─── */}
-            <div className="flex flex-col gap-3.5 z-20 lg:mt-0">
+            <div
+              className="flex flex-col gap-3.5 z-20 lg:mt-0 will-change-transform"
+              style={{
+                transform: isHeroReady ? "translateY(0)" : "translateY(60px)",
+                opacity: isHeroReady ? 1 : 0,
+                transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.28s, opacity 1s ease-out 0.28s",
+              }}
+            >
               <CoinCard />
               <WalletSelectorCard />
             </div>
 
             {/* ─── COLUMN 4: [Box 7: Please Wait (185px)] + [Box 8: Tabs (Wide 40px)] + [Box 9: Goals (Wide 135px)] (Center-Right) ─── */}
-            <div className="flex flex-col gap-3 lg:mt-7">
+            <div
+              className="flex flex-col gap-3 lg:mt-7 will-change-transform"
+              style={{
+                transform: isHeroReady ? "translateY(0)" : "translateY(60px)",
+                opacity: isHeroReady ? 1 : 0,
+                transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.42s, opacity 1s ease-out 0.42s",
+              }}
+            >
               <ProcessingStatusCard />
               <WalletPortfolioTabsCard />
               <GoalsTelemetryCard />
             </div>
 
             {/* ─── COLUMN 5: [Box 10: Cyberpunk Avatar (195px)] + [Box 11: Routing (130px)] + [Box 12: Swipe (44px)] (Far Right) ─── */}
-            <div className="flex flex-col gap-3 lg:mt-7">
+            <div
+              className="flex flex-col gap-3 lg:mt-7 will-change-transform"
+              style={{
+                transform: isHeroReady ? "translateY(0)" : "translateY(60px)",
+                opacity: isHeroReady ? 1 : 0,
+                transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.55s, opacity 1s ease-out 0.55s",
+              }}
+            >
               <CyberpunkAvatarCard />
               <TransactionRoutingCard />
               <SwipeToSendCard />

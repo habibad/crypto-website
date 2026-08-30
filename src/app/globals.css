@@ -157,6 +157,23 @@
   }
 }
 
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.75;
+  }
+  80% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(220%);
+    opacity: 0;
+  }
+}
+
 .animate-pulse-glow {
   animation: pulse-glow 4s ease-in-out infinite;
 }
@@ -175,3 +192,4 @@
   background-size: 200% 100%;
   animation: shimmer-sweep 3s infinite;
 }
+
