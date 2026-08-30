@@ -20,7 +20,7 @@ export function useLiveCounter({
   duration = 1800,
   delay = 300,
   decimals = 0,
-  prefix = "$",
+  prefix = "",
   suffix = "",
   separator = ".",
   decimalSeparator = ",",

@@ -1,315 +1,759 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { Cpu, Globe2, Coins, CheckSquare, Users, ArrowRight } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Rocket, ArrowRight, Globe, Check, Users, Database, Cpu } from "lucide-react";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+// ─── Token Definition ────────────────────────────────────────────────────────
+interface Token {
+  symbol: string;
+  bgColor: string;
+  textColor: string;
+  size: "sm" | "md" | "lg";
+  icon: React.ReactNode;
+  glow: string;
 }
 
 export default function AIProcessingHub() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const chipRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, amount: 0.15 });
 
-  // 4 Orthogonal Path refs
-  const pathLTRef = useRef<SVGPathElement>(null);
-  const pathLBRef = useRef<SVGPathElement>(null);
-  const pathRTRef = useRef<SVGPathElement>(null);
-  const pathRBRef = useRef<SVGPathElement>(null);
+  // Left Tokens
+  const leftTokens: Token[] = [
+    {
+      symbol: "ETH",
+      bgColor: "rgba(24, 32, 74, 0.95)",
+      textColor: "#8da4f7",
+      size: "sm",
+      glow: "#627EEA",
+      icon: (
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="#8da4f7">
+          <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
+        </svg>
+      ),
+    },
+    {
+      symbol: "BTC",
+      bgColor: "#F7931A",
+      textColor: "#fff",
+      size: "md",
+      glow: "#F7931A",
+      icon: <span className="font-bold text-xl sm:text-2xl leading-none">₿</span>,
+    },
+    {
+      symbol: "XRP",
+      bgColor: "#11111a",
+      textColor: "#fff",
+      size: "md",
+      glow: "#888",
+      icon: (
+        <svg
+          className="w-5 h-5 sm:w-6 sm:h-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="2.4"
+        >
+          <path d="M4 4l5 5-5 5M20 4l-5 5 5 5" />
+        </svg>
+      ),
+    },
+    {
+      symbol: "SHIB",
+      bgColor: "#e11d48",
+      textColor: "#fff",
+      size: "lg",
+      glow: "#FFA409",
+      icon: (
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#fbbf24] flex items-center justify-center text-2xl sm:text-3xl shadow-inner">
+          🐕
+        </div>
+      ),
+    },
+    {
+      symbol: "LINK",
+      bgColor: "#2563eb",
+      textColor: "#ffffff",
+      size: "lg",
+      glow: "#375BD2",
+      icon: (
+        <svg className="w-8 h-8 sm:w-10 sm:h-10" viewBox="0 0 32 32" fill="#ffffff">
+          <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
+        </svg>
+      ),
+    },
+  ];
 
-  // 4 Metric Card refs
-  const cardLTRef = useRef<HTMLDivElement>(null);
-  const cardLBRef = useRef<HTMLDivElement>(null);
-  const cardRTRef = useRef<HTMLDivElement>(null);
-  const cardRBRef = useRef<HTMLDivElement>(null);
+  // Right Tokens
+  const rightTokens: Token[] = [
+    {
+      symbol: "USDT",
+      bgColor: "#26A17B",
+      textColor: "#fff",
+      size: "lg",
+      glow: "#26A17B",
+      icon: <span className="font-bold text-3xl sm:text-4xl leading-none">₮</span>,
+    },
+    {
+      symbol: "LUNA",
+      bgColor: "#0c1326",
+      textColor: "#facc15",
+      size: "lg",
+      glow: "#FFD700",
+      icon: (
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0a0f1d] border border-white/10 flex items-center justify-center text-2xl sm:text-3xl">
+          🌙
+        </div>
+      ),
+    },
+    {
+      symbol: "BNB",
+      bgColor: "#F3BA2F",
+      textColor: "#000",
+      size: "md",
+      glow: "#F3BA2F",
+      icon: (
+        <svg className="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="#000">
+          <path d="M12 2l3.5 3.5-3.5 3.5-3.5-3.5L12 2zm0 13l3.5 3.5-3.5 3.5-3.5-3.5L12 15zm-6.5-6.5L9 12l-3.5 3.5L2 12l3.5-3.5zm13 0L22 12l-3.5 3.5L15 12l3.5-3.5zM12 9l3 3-3 3-3-3 3-3z" />
+        </svg>
+      ),
+    },
+    {
+      symbol: "SEI",
+      bgColor: "rgba(120, 50, 220, 0.25)",
+      textColor: "#c084fc",
+      size: "sm",
+      glow: "#9945FF",
+      icon: (
+        <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
+            fill="#c084fc"
+          />
+        </svg>
+      ),
+    },
+    {
+      symbol: "HBAR",
+      bgColor: "#111116",
+      textColor: "#aaa",
+      size: "sm",
+      glow: "#444",
+      icon: (
+        <span className="font-mono font-bold text-sm sm:text-base text-[#aaa]">Ħ</span>
+      ),
+    },
+  ];
 
-  useEffect(() => {
-    if (!sectionRef.current) return;
+  const leftYOffsets = [68, 44, 24, 10, 4];
+  const rightYOffsets = [4, 10, 24, 44, 68];
 
-    const ctx = gsap.context(() => {
-      const paths = [
-        pathLTRef.current,
-        pathLBRef.current,
-        pathRTRef.current,
-        pathRBRef.current,
-      ].filter(Boolean) as SVGPathElement[];
-
-      const cards = [
-        cardLTRef.current,
-        cardLBRef.current,
-        cardRTRef.current,
-        cardRBRef.current,
-      ].filter(Boolean) as HTMLDivElement[];
-
-      // Initialize paths for stroke-draw animation
-      paths.forEach((p) => {
-        const len = p.getTotalLength() || 400;
-        gsap.set(p, {
-          strokeDasharray: len,
-          strokeDashoffset: len,
-          opacity: 0.8,
-        });
-      });
-
-      // Initialize cards in hidden state
-      gsap.set(cards, {
-        opacity: 0,
-        scale: 0.82,
-        filter: "blur(12px)",
-      });
-
-      // Initialize chip scale
-      if (chipRef.current) {
-        gsap.set(chipRef.current, {
-          scale: 0.88,
-          opacity: 0.6,
-        });
-      }
-
-      // GSAP ScrollTrigger timeline for 90-degree orthogonal circuit propagation
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-          end: "center 45%",
-          scrub: 1.2,
-        },
-      });
-
-      // 1. Chip powers up
-      if (chipRef.current) {
-        tl.to(
-          chipRef.current,
-          {
-            scale: 1.0,
-            opacity: 1,
-            ease: "power2.out",
-            duration: 0.8,
-          },
-          0
-        );
-      }
-
-      // 2. Draw circuit paths outward from chip
-      tl.to(
-        paths,
-        {
-          strokeDashoffset: 0,
-          ease: "power1.inOut",
-          duration: 1.2,
-        },
-        0.2
-      );
-
-      // 3. Metric cards reveal and unblur as circuits arrive
-      tl.to(
-        cards,
-        {
-          opacity: 1,
-          scale: 1.0,
-          filter: "blur(0px)",
-          stagger: 0.1,
-          ease: "power2.out",
-          duration: 1.0,
-        },
-        0.5
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const dimFor = (s: "sm" | "md" | "lg") =>
+    s === "sm"
+      ? "w-11 h-11 sm:w-14 sm:h-14"
+      : s === "lg"
+        ? "w-[4.2rem] h-[4.2rem] sm:w-[4.8rem] sm:h-[4.8rem]"
+        : "w-14 h-14 sm:w-16 sm:h-16";
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full py-24 md:py-32 flex flex-col items-center justify-center overflow-hidden"
-    >
-      {/* Top curved neon atmospheric lens flare */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[380px] bg-gradient-to-b from-[#7928CA]/30 via-[#E03E99]/20 to-transparent rounded-b-full blur-[130px] pointer-events-none -z-10" />
-
-      {/* Section Header */}
-      <div className="max-w-3xl mx-auto px-4 text-center z-10 flex flex-col items-center">
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-light text-white tracking-tight leading-tight">
-          10k+ Crypto Assets <br />
-          <span className="font-normal text-gradient-neon">Available To Trade</span>
-        </h2>
-        <p className="mt-4 text-sm sm:text-base text-gray-400 max-w-lg font-normal leading-relaxed">
-          Explore every potential Crypto Assets with AI assistance, automated arbitrage scans, and
-          neural sentiment modeling.
-        </p>
-
-        <div className="mt-7 flex items-center gap-4">
-          <button className="px-5 py-2.5 rounded-full text-xs font-medium text-gray-300 hover:text-white transition-colors cursor-pointer">
-            Learn More
-          </button>
-          <button className="px-6 py-2.5 rounded-full btn-gradient-neon text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
-            <span>Start Trading Now</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+    <div ref={containerRef} className="relative w-full bg-[#000000] text-white">
+      {/* ── BACKGROUND: Ambient Stars ── */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {[
+          { t: "4%", l: "6%", r: 1.5, o: 0.7 },
+          { t: "2%", l: "22%", r: 1, o: 0.5 },
+          { t: "8%", l: "36%", r: 1.5, o: 0.4 },
+          { t: "3%", l: "68%", r: 1.5, o: 0.6 },
+          { t: "6%", l: "82%", r: 1, o: 0.5 },
+          { t: "12%", l: "94%", r: 1.5, o: 0.7 },
+          { t: "28%", l: "8%", r: 1, o: 0.4 },
+          { t: "34%", l: "92%", r: 1.5, o: 0.5 },
+          { t: "55%", l: "12%", r: 1.5, o: 0.4 },
+          { t: "62%", l: "88%", r: 1.2, o: 0.5 },
+          { t: "78%", l: "15%", r: 1, o: 0.4 },
+          { t: "85%", l: "85%", r: 1.5, o: 0.4 },
+        ].map((s, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              top: s.t,
+              left: s.l,
+              width: s.r,
+              height: s.r,
+              opacity: s.o,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Microchip & Orthogonal PCB 90-Degree Circuit Diagram Container */}
-      <div className="relative mt-16 w-full max-w-5xl h-[380px] flex items-center justify-center">
-        {/* SVG Circuit Traces (Desktop & Tablet) */}
+      {/* ════════════════════════════════════════════════════════
+          PART 1: HERO TOKEN ORBIT + HEADLINE & BUTTONS
+      ════════════════════════════════════════════════════════ */}
+      <section className="relative z-10 w-full overflow-hidden pt-16 pb-0">
+        <div className="relative w-full max-w-[1400px] mx-auto px-6 flex items-center justify-center">
+
+          {/* Left tokens */}
+          <div className="flex items-center gap-3 sm:gap-4.5 flex-1 justify-end pr-3 sm:pr-6">
+            {leftTokens.map((tk, idx) => {
+              const delay = 0.4 + (leftTokens.length - 1 - idx) * 0.07;
+              const yOffset = leftYOffsets[idx];
+              return (
+                <motion.div
+                  key={tk.symbol}
+                  initial={{ opacity: 0, scale: 0.2, y: yOffset + 35, x: 40 }}
+                  animate={
+                    isInView
+                      ? { opacity: 1, scale: 1, y: yOffset, x: 0 }
+                      : { opacity: 0, scale: 0.2, y: yOffset + 35, x: 40 }
+                  }
+                  transition={{
+                    duration: 0.7,
+                    delay: delay,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="cursor-pointer transition-transform duration-300 hover:scale-115"
+                >
+                  <div
+                    className={`${dimFor(tk.size)} rounded-full border border-white/12 flex items-center justify-center overflow-hidden`}
+                    style={{
+                      backgroundColor: tk.bgColor,
+                      boxShadow: `0 0 24px ${tk.glow}45, 0 6px 20px rgba(0,0,0,0.85)`,
+                    }}
+                  >
+                    <span style={{ color: tk.textColor }}>{tk.icon}</span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Center Rocket Hub */}
+          <div className="relative flex-shrink-0 flex flex-col items-center z-30">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.4 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="relative flex items-center justify-center"
+              style={{ width: 176, height: 176 }}
+            >
+              {/* Rotating Orbital Ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 8,
+                  ease: "linear",
+                }}
+                className="absolute inset-0 rounded-full border border-pink-500/25"
+                style={{
+                  boxShadow: "0 0 30px rgba(219, 39, 119, 0.25)",
+                }}
+              >
+                <div
+                  className="absolute w-3.5 h-3.5 rounded-full bg-[#f472b6]"
+                  style={{
+                    top: 8,
+                    right: 24,
+                    boxShadow: "0 0 14px #f472b6, 0 0 28px rgba(244, 114, 182, 0.8)",
+                  }}
+                />
+                <div
+                  className="absolute w-3.5 h-3.5 rounded-full bg-[#c084fc]"
+                  style={{
+                    bottom: 8,
+                    left: 24,
+                    boxShadow: "0 0 14px #c084fc, 0 0 28px rgba(192, 132, 252, 0.8)",
+                  }}
+                />
+              </motion.div>
+
+              {/* Core Circle */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0, rotate: -30 }}
+                animate={
+                  isInView
+                    ? { opacity: 1, scale: 1, rotate: 0 }
+                    : { opacity: 0, scale: 0, rotate: -30 }
+                }
+                transition={{
+                  duration: 0.7,
+                  delay: 0.25,
+                  type: "spring",
+                  stiffness: 220,
+                  damping: 18,
+                }}
+                className="w-[130px] h-[130px] rounded-full bg-[#120e20] border border-white/18 flex items-center justify-center relative overflow-hidden"
+                style={{
+                  boxShadow:
+                    "0 0 50px rgba(219,39,119,0.45), 0 0 100px rgba(219,39,119,0.25), inset 0 0 24px rgba(0,0,0,0.7)",
+                }}
+              >
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 130 130">
+                  <path
+                    d="M 22 82 A 46 46 0 0 1 108 82"
+                    fill="none"
+                    stroke="url(#rocketSpeedometerArc)"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="rocketSpeedometerArc" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#7928CA" />
+                      <stop offset="50%" stopColor="#db2777" />
+                      <stop offset="100%" stopColor="#f472b6" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <motion.div
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                >
+                  <Rocket className="relative z-10 w-10 h-10 text-white stroke-[2.2] drop-shadow-[0_0_16px_rgba(255,255,255,1)]" />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* Right tokens */}
+          <div className="flex items-center gap-3 sm:gap-4.5 flex-1 justify-start pl-3 sm:pl-6">
+            {rightTokens.map((tk, idx) => {
+              const delay = 0.4 + idx * 0.07;
+              const yOffset = rightYOffsets[idx];
+              return (
+                <motion.div
+                  key={tk.symbol}
+                  initial={{ opacity: 0, scale: 0.2, y: yOffset + 35, x: -40 }}
+                  animate={
+                    isInView
+                      ? { opacity: 1, scale: 1, y: yOffset, x: 0 }
+                      : { opacity: 0, scale: 0.2, y: yOffset + 35, x: -40 }
+                  }
+                  transition={{
+                    duration: 0.7,
+                    delay: delay,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="cursor-pointer transition-transform duration-300 hover:scale-115"
+                >
+                  <div
+                    className={`${dimFor(tk.size)} rounded-full border border-white/12 flex items-center justify-center overflow-hidden`}
+                    style={{
+                      backgroundColor: tk.bgColor,
+                      boxShadow: `0 0 24px ${tk.glow}45, 0 6px 20px rgba(0,0,0,0.85)`,
+                    }}
+                  >
+                    <span style={{ color: tk.textColor }}>{tk.icon}</span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+        </div>
+
+        {/* Headline + Subtitle + CTA */}
+        <div className="relative z-10 w-full flex flex-col items-center text-center px-4 pt-12 pb-0">
+          <motion.h2
+            initial={{ opacity: 0, y: 35, filter: "blur(8px)" }}
+            animate={
+              isInView
+                ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                : { opacity: 0, y: 35, filter: "blur(8px)" }
+            }
+            transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl sm:text-6xl md:text-[4.2rem] lg:text-[4.75rem] text-white leading-[1.12]"
+            style={{
+              fontFamily: "var(--font-outfit, sans-serif)",
+              fontWeight: 300,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            10K+ Crypto Assets <br />
+            <span style={{ fontWeight: 400 }}>Available To Trade</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 25 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 25 }}
+            transition={{ duration: 0.7, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-5 text-[15px] sm:text-[17px] md:text-[18px] text-[#9ca3af] max-w-xl leading-relaxed"
+            style={{
+              fontFamily: "var(--font-outfit, sans-serif)",
+              fontWeight: 300,
+            }}
+          >
+            Explore every potential Crypto Assets with AI assistance
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.7, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 flex items-center gap-7"
+          >
+            <button
+              type="button"
+              className="text-[14.5px] sm:text-[15.5px] text-[#9ca3af] hover:text-white transition-colors cursor-pointer"
+              style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
+            >
+              Learn More
+            </button>
+            <button
+              type="button"
+              className="px-7 py-3 rounded-full text-[14.5px] sm:text-[15.5px] font-medium text-white flex items-center gap-2.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
+              style={{
+                background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
+                boxShadow: "0 0 28px rgba(219,39,119,0.5), 0 0 56px rgba(219,39,119,0.25)",
+                fontFamily: "var(--font-outfit, sans-serif)",
+              }}
+            >
+              <span>Start Trading Now</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          PART 2: ANIMATED CONVERGING CURVE LIGHTING + LIGHT WATERFALL
+          - Left and Right white/pink light streams converge to center
+          - Collide with upward smoke surge + downward funnel to the chip
+      ════════════════════════════════════════════════════════ */}
+      <div className="relative w-full overflow-hidden" style={{ height: 340, marginTop: -90 }}>
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none hidden md:block"
-          viewBox="0 0 900 380"
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 1440 340"
           preserveAspectRatio="none"
+          fill="none"
         >
           <defs>
-            <linearGradient id="traceGradNeon" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#7928CA" />
-              <stop offset="50%" stopColor="#E03E99" />
-              <stop offset="100%" stopColor="#7928CA" />
+            {/* 1. Base Ambient Pink Atmosphere along the curve */}
+            <linearGradient id="basePinkAtmosphere" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgb(219, 39, 119)" stopOpacity="0.85" />
+              <stop offset="22%" stopColor="#f472b6" stopOpacity="0.7" />
+              <stop offset="42%" stopColor="#fbcfe8" stopOpacity="0.35" />
+              <stop offset="50%" stopColor="#ffffff" stopOpacity="0.2" />
+              <stop offset="58%" stopColor="#fbcfe8" stopOpacity="0.35" />
+              <stop offset="78%" stopColor="#f472b6" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="rgb(219, 39, 119)" stopOpacity="0.85" />
             </linearGradient>
 
-            <filter id="circuitGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            {/* 2. White-Hot Center Flare Burst */}
+            <radialGradient id="centerBurstGlow" cx="50%" cy="75%" r="50%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="25%" stopColor="#fdf2f8" stopOpacity="0.95" />
+              <stop offset="55%" stopColor="#f472b6" stopOpacity="0.65" />
+              <stop offset="85%" stopColor="rgb(219, 39, 119)" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+            </radialGradient>
+
+            {/* 3. Downward Light Funnel to Chip */}
+            <linearGradient id="downwardChipBeam" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="25%" stopColor="#fdf2f8" stopOpacity="0.9" />
+              <stop offset="65%" stopColor="#f472b6" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="rgb(219, 39, 119)" stopOpacity="0.15" />
+            </linearGradient>
+
+            {/* Gaussian Blur Filters */}
+            <filter id="atmosphericFogBlur" x="-30%" y="-50%" width="160%" height="200%">
+              <feGaussianBlur stdDeviation="35" result="blur" />
               <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="blur" />
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="sharpLaserBlur" x="-10%" y="-40%" width="120%" height="180%">
+              <feGaussianBlur stdDeviation="4" result="glow" />
+              <feMerge>
+                <feMergeNode in="glow" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
-          {/* 90-Degree Orthogonal PCB Traces connecting Central Chip (center ~ 450, 190) to 4 Nodes */}
-          {/* 1. Left-Top Trace -> (180, 80) */}
+          {/* Background Vertical Matrix Lines */}
+          {[160, 320, 480, 640, 800, 960, 1120, 1280].map((x) => (
+            <line
+              key={x}
+              x1={x}
+              y1="160"
+              x2={x}
+              y2="340"
+              stroke="rgba(255, 255, 255, 0.04)"
+              strokeWidth="1"
+            />
+          ))}
+
+          {/* Under-Curve Gradient Fill */}
           <path
-            ref={pathLTRef}
-            d="M 390 170 H 260 V 90 H 180"
-            fill="none"
-            stroke="url(#traceGradNeon)"
-            strokeWidth="2.5"
-            filter="url(#circuitGlow)"
-          />
-          {/* 2. Left-Bottom Trace -> (180, 300) */}
-          <path
-            ref={pathLBRef}
-            d="M 390 210 H 260 V 290 H 180"
-            fill="none"
-            stroke="url(#traceGradNeon)"
-            strokeWidth="2.5"
-            filter="url(#circuitGlow)"
-          />
-          {/* 3. Right-Top Trace -> (720, 80) */}
-          <path
-            ref={pathRTRef}
-            d="M 510 170 H 640 V 90 H 720"
-            fill="none"
-            stroke="url(#traceGradNeon)"
-            strokeWidth="2.5"
-            filter="url(#circuitGlow)"
-          />
-          {/* 4. Right-Bottom Trace -> (720, 300) */}
-          <path
-            ref={pathRBRef}
-            d="M 510 210 H 640 V 290 H 720"
-            fill="none"
-            stroke="url(#traceGradNeon)"
-            strokeWidth="2.5"
-            filter="url(#circuitGlow)"
+            d="M 0 0 C 380 250, 1060 250, 1440 0 L 1440 340 L 0 340 Z"
+            fill="url(#basePinkAtmosphere)"
+            opacity="0.85"
+            filter="url(#atmosphericFogBlur)"
           />
 
-          {/* Continuous Energetic Glowing Light Beads running along each path */}
-          <circle r="4" fill="#ffffff" filter="url(#circuitGlow)">
-            <animateMotion repeatCount="indefinite" dur="2.4s" path="M 390 170 H 260 V 90 H 180" />
-          </circle>
-          <circle r="4" fill="#E03E99" filter="url(#circuitGlow)">
-            <animateMotion repeatCount="indefinite" dur="2.8s" path="M 390 210 H 260 V 290 H 180" />
-          </circle>
-          <circle r="4" fill="#ffffff" filter="url(#circuitGlow)">
-            <animateMotion repeatCount="indefinite" dur="2.6s" path="M 510 170 H 640 V 90 H 720" />
-          </circle>
-          <circle r="4" fill="#38bdf8" filter="url(#circuitGlow)">
-            <animateMotion repeatCount="indefinite" dur="3.0s" path="M 510 210 H 640 V 290 H 720" />
-          </circle>
+          {/* Center Light Flare */}
+          <motion.ellipse
+            cx="720"
+            cy="240"
+            rx="360"
+            ry="85"
+            fill="url(#centerBurstGlow)"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
+            transition={{ duration: 0.9, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
+            filter="url(#atmosphericFogBlur)"
+          />
+
+          {/* Downward Light Waterfall funnel pouring towards the Chip */}
+          <motion.polygon
+            points="640,235 800,235 770,340 670,340"
+            fill="url(#downwardChipBeam)"
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={isInView ? { opacity: 0.95, scaleY: 1 } : { opacity: 0, scaleY: 0 }}
+            transition={{ duration: 0.9, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            filter="url(#atmosphericFogBlur)"
+          />
+
+          {/* Core White Laser Line along the curve */}
+          <path
+            d="M 0 0 C 380 250, 1060 250, 1440 0"
+            stroke="#ffffff"
+            strokeWidth="2.8"
+            strokeOpacity="0.95"
+            filter="url(#sharpLaserBlur)"
+          />
         </svg>
-
-        {/* Central Glowing AI Microchip Processor */}
-        <div ref={chipRef} className="relative z-20 flex flex-col items-center">
-          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-[#7928CA] via-[#E03E99] to-[#F43F5E] p-1 shadow-[0_0_60px_rgba(224,62,153,0.6)] flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-500">
-            {/* Pulsating Microchip Glow Halo */}
-            <div className="absolute -inset-4 rounded-3xl bg-[#E03E99]/35 blur-xl animate-pulse -z-10" />
-
-            {/* Inner Dark Silicone Die */}
-            <div className="w-full h-full rounded-[22px] bg-[#12111d] flex flex-col items-center justify-center border border-white/20 shadow-inner relative overflow-hidden">
-              {/* Circuit Grid texture */}
-              <div className="absolute inset-0 bg-[radial-gradient(#E03E99_1px,transparent_1px)] [background-size:8px_8px] opacity-25" />
-
-              {/* Glowing CPU Icon */}
-              <Cpu className="w-12 h-12 sm:w-14 sm:h-14 text-white stroke-[1.5] drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
-              <span className="text-[9px] font-mono font-bold tracking-widest text-pink-300 uppercase mt-1">
-                AI CORE
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 4 Floating Metric Nodes */}
-        {/* 1. Left Top: 50+ Countries */}
-        <div ref={cardLTRef} className="absolute left-4 sm:left-10 top-4 md:top-8 z-20 will-change-transform">
-          <div className="glass-card px-4 py-3 rounded-2xl border border-white/10 flex items-center gap-3 shadow-xl hover:border-[#E03E99]/50 transition-all">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
-              <Globe2 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-lg font-bold text-white font-mono leading-none">
-                50+
-              </div>
-              <div className="text-[11px] text-gray-400 font-medium mt-1">Countries</div>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Left Bottom: 10K+ Crypto Assets */}
-        <div ref={cardLBRef} className="absolute left-4 sm:left-10 bottom-4 md:bottom-8 z-20 will-change-transform">
-          <div className="glass-card px-4 py-3 rounded-2xl border border-white/10 flex items-center gap-3 shadow-xl hover:border-[#7928CA]/50 transition-all">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <Coins className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-lg font-bold text-white font-mono leading-none">
-                10K+
-              </div>
-              <div className="text-[11px] text-gray-400 font-medium mt-1">Crypto Assets</div>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. Right Top: 97.5% Success Rate */}
-        <div ref={cardRTRef} className="absolute right-4 sm:right-10 top-4 md:top-8 z-20 will-change-transform">
-          <div className="glass-card px-4 py-3 rounded-2xl border border-white/10 flex items-center gap-3 shadow-xl hover:border-emerald-500/50 transition-all">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <CheckSquare className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-lg font-bold text-emerald-400 font-mono leading-none">
-                97.5%
-              </div>
-              <div className="text-[11px] text-gray-400 font-medium mt-1">Success Rate</div>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. Right Bottom: 10,000+ Daily Traders */}
-        <div ref={cardRBRef} className="absolute right-4 sm:right-10 bottom-4 md:bottom-8 z-20 will-change-transform">
-          <div className="glass-card px-4 py-3 rounded-2xl border border-white/10 flex items-center gap-3 shadow-xl hover:border-pink-500/50 transition-all">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-300">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-lg font-bold text-white font-mono leading-none">
-                10.000+
-              </div>
-              <div className="text-[11px] text-gray-400 font-medium mt-1">Daily Traders</div>
-            </div>
-          </div>
-        </div>
       </div>
-    </section>
+
+      {/* ════════════════════════════════════════════════════════
+          PART 3: CENTRAL AI PROCESSOR CHIP + CIRCUIT WIRES + 4 METRIC CARDS
+          - Symmetrical curved circuit wires connecting to:
+            Left: [50+ Countries], [10K+ Crypto Assets]
+            Right: [97,5% Success Rate], [10,000+ Daily Traders]
+      ════════════════════════════════════════════════════════ */}
+      <section className="relative z-10 w-full max-w-[1360px] mx-auto px-6 pt-2 pb-32">
+        {/* Subtle background matrix lines */}
+        <div className="absolute inset-0 pointer-events-none flex justify-center gap-28 opacity-20">
+          {[-450, -300, -150, 0, 150, 300, 450].map((offset) => (
+            <div
+              key={offset}
+              className="h-full w-[1px] bg-gradient-to-b from-pink-500/30 via-white/10 to-transparent"
+              style={{ transform: `translateX(${offset}px)` }}
+            />
+          ))}
+        </div>
+
+        {/* Diagram Layout */}
+        <div className="relative w-full flex items-center justify-between min-h-[380px]">
+
+          {/* ── LEFT 2 METRIC CARDS ── */}
+          <motion.div
+            initial={{ opacity: 0, x: -60 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -60 }}
+            transition={{ duration: 0.8, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col gap-12 z-20 w-[240px] sm:w-[270px]"
+          >
+            {/* Top Left: 50+ Countries */}
+            <div className="relative group bg-[#0e1017]/95 hover:bg-[#131722] backdrop-blur-xl border border-white/10 hover:border-pink-500/50 rounded-2xl p-5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#161a26] border border-white/10 flex items-center justify-center text-white">
+                  <Globe className="w-6 h-6 text-pink-400" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                    50+
+                  </div>
+                  <div className="text-xs text-[#9ca3af] font-medium tracking-wide">
+                    Countries
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Left: 10K+ Crypto Assets */}
+            <div className="relative group bg-[#0e1017]/95 hover:bg-[#131722] backdrop-blur-xl border border-white/10 hover:border-pink-500/50 rounded-2xl p-5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#161a26] border border-white/10 flex items-center justify-center text-white">
+                  <Database className="w-6 h-6 text-pink-400" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                    10K+
+                  </div>
+                  <div className="text-xs text-[#9ca3af] font-medium tracking-wide">
+                    Crypto Assets
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── CENTER AI PROCESSOR CHIP WITH CONNECTING CIRCUIT WIRES ── */}
+          <div className="relative flex-1 flex items-center justify-center px-4">
+
+            {/* Responsive SVG Connecting Circuit Wires */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 600 380"
+              preserveAspectRatio="none"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="neonCircuitWireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+                  <stop offset="40%" stopColor="#f472b6" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="rgb(219, 39, 119)" stopOpacity="0.95" />
+                </linearGradient>
+
+                <filter id="circuitWireGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="glow" />
+                  <feMerge>
+                    <feMergeNode in="glow" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Wire 1: Chip to Top Left Card */}
+              <motion.path
+                d="M 215 150 C 135 150, 75 75, 0 75"
+                stroke="url(#neonCircuitWireGrad)"
+                strokeWidth="2.4"
+                filter="url(#circuitWireGlow)"
+                initial={{ pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ duration: 1.1, delay: 1.3, ease: "easeInOut" }}
+              />
+
+              {/* Wire 2: Chip to Bottom Left Card */}
+              <motion.path
+                d="M 215 230 C 135 230, 75 305, 0 305"
+                stroke="url(#neonCircuitWireGrad)"
+                strokeWidth="2.4"
+                filter="url(#circuitWireGlow)"
+                initial={{ pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ duration: 1.1, delay: 1.3, ease: "easeInOut" }}
+              />
+
+              {/* Wire 3: Chip to Top Right Card */}
+              <motion.path
+                d="M 385 150 C 465 150, 525 75, 600 75"
+                stroke="url(#neonCircuitWireGrad)"
+                strokeWidth="2.4"
+                filter="url(#circuitWireGlow)"
+                initial={{ pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ duration: 1.1, delay: 1.3, ease: "easeInOut" }}
+              />
+
+              {/* Wire 4: Chip to Bottom Right Card */}
+              <motion.path
+                d="M 385 230 C 465 230, 525 305, 600 305"
+                stroke="url(#neonCircuitWireGrad)"
+                strokeWidth="2.4"
+                filter="url(#circuitWireGlow)"
+                initial={{ pathLength: 0 }}
+                animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ duration: 1.1, delay: 1.3, ease: "easeInOut" }}
+              />
+            </svg>
+
+            {/* The Central Chip Body */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.8, delay: 1.0, type: "spring", stiffness: 200, damping: 18 }}
+              className="relative z-30 flex items-center justify-center"
+            >
+              {/* Outer Deep Radiant Magenta Backlight Ambient Aura */}
+              <div
+                className="absolute w-[260px] h-[260px] rounded-3xl pointer-events-none"
+                style={{
+                  background: "radial-gradient(circle, rgba(219,39,119,0.7) 0%, rgba(219,39,119,0.2) 50%, transparent 75%)",
+                  filter: "blur(28px)",
+                }}
+              />
+
+              {/* Black Outer Casing with Rounded Corners & Subtle Screws/Pins */}
+              <div className="relative w-[190px] h-[190px] sm:w-[210px] sm:h-[210px] rounded-[34px] bg-[#090b10] border-2 border-white/20 p-4 flex items-center justify-center shadow-[0_0_60px_rgba(219,39,119,0.55),inset_0_0_20px_rgba(0,0,0,0.9)]">
+                {/* 4 Corner Hardware Alignment Marks */}
+                <div className="absolute top-3 left-3 w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="absolute bottom-3 left-3 w-1.5 h-1.5 rounded-full bg-white/40" />
+                <div className="absolute bottom-3 right-3 w-1.5 h-1.5 rounded-full bg-white/40" />
+
+                {/* Inner Glowing Gradient Core with Chip Icon */}
+                <div
+                  className="relative w-full h-full rounded-[24px] flex items-center justify-center shadow-inner overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, #ef4444 0%, #db2777 50%, #9333ea 100%)",
+                  }}
+                >
+                  {/* Inner Circuit Grid Pattern */}
+                  <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:12px_12px]" />
+
+                  {/* CPU / AI Chip Icon */}
+                  <motion.div
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                    className="relative z-10 text-white"
+                  >
+                    <Cpu className="w-18 h-18 sm:w-22 sm:h-22 stroke-[1.8] drop-shadow-[0_0_18px_rgba(255,255,255,0.95)]" />
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT 2 METRIC CARDS ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 60 }}
+            transition={{ duration: 0.8, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col gap-12 z-20 w-[240px] sm:w-[270px]"
+          >
+            {/* Top Right: 97.5% Success Rate */}
+            <div className="relative group bg-[#0e1017]/95 hover:bg-[#131722] backdrop-blur-xl border border-white/10 hover:border-pink-500/50 rounded-2xl p-5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#161a26] border border-white/10 flex items-center justify-center text-white">
+                  <Check className="w-6 h-6 text-pink-400 stroke-[2.5]" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                    97,5%
+                  </div>
+                  <div className="text-xs text-[#9ca3af] font-medium tracking-wide">
+                    Success Rate
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Right: 10,000+ Daily Traders */}
+            <div className="relative group bg-[#0e1017]/95 hover:bg-[#131722] backdrop-blur-xl border border-white/10 hover:border-pink-500/50 rounded-2xl p-5 shadow-[0_12px_40px_rgba(0,0,0,0.85)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#161a26] border border-white/10 flex items-center justify-center text-white">
+                  <Users className="w-6 h-6 text-pink-400" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                    10,000+
+                  </div>
+                  <div className="text-xs text-[#9ca3af] font-medium tracking-wide">
+                    Daily Traders
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
+    </div>
   );
 }

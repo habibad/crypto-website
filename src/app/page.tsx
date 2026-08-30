@@ -4,7 +4,6 @@ import React from "react";
 import StarfieldCanvas from "@/components/3d/StarfieldCanvas";
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/hero/HeroSection";
-import CryptoOrbitArc from "@/components/orbit/CryptoOrbitArc";
 import AIProcessingHub from "@/components/ai-hub/AIProcessingHub";
 import RiskStrategiesStepper from "@/components/process/RiskStrategiesStepper";
 import OptimizedEngineMatrix from "@/components/engine/OptimizedEngineMatrix";
@@ -37,7 +36,6 @@ export default function Home() {
 
       {/* ── Rest of page ── below the hero frame */}
       <main className="relative w-full bg-[#070709] text-gray-100 flex flex-col overflow-x-hidden">
-        <CryptoOrbitArc />
         <AIProcessingHub />
         <RiskStrategiesStepper />
         <OptimizedEngineMatrix />
