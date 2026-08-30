@@ -31,140 +31,232 @@ export default function HeroSection() {
         />
       )}
 
-      {/* ═══════════════════════════
-          ATMOSPHERIC NEBULA BACKGROUND LAYER
-          Exact half-round parabolic celestial ring + corner flares
-          Left: deep magenta/rose atmospheric nebula
-          Right: luminous white-pink stellar burst flare
-          Center: dark void framing headline
-      ═══════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════
+          ATMOSPHERIC CELESTIAL AURORA ARC & CORNER SPOTLIGHTS
+          Exact match with Reference Image 1:
+          - Deep pitch-black void at top center behind headline
+          - Brilliant, wide luminous spotlights emanating from top-left and top-right
+          - Smoothly tapering down into a delicate, thinner ("chikom") and lighter ("halka") arc in the center
+      ══════════════════════════════════════════════════════ */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
       >
-        {/* ── Left atmospheric nebula flare ── */}
+        {/* ── 1. Left Corner Radiant Spotlight & Plume (Fills top-left with radiant glow) ── */}
+        {/* Deep ambient rose/magenta background glow */}
         <div
-          className="absolute -top-16 -left-16 w-[45%] h-[520px]"
+          className="absolute -top-16 -left-16 w-[52%] h-[520px]"
           style={{
             background:
-              "radial-gradient(ellipse at 12% 20%, rgba(245, 55, 155, 0.72) 0%, rgba(205, 30, 125, 0.5) 30%, rgba(120, 15, 85, 0.22) 58%, transparent 75%)",
-            filter: "blur(48px)",
-          }}
-        />
-
-        {/* ── Right atmospheric stellar burst (white-pink core) ── */}
-        <div
-          className="absolute -top-16 -right-16 w-[45%] h-[520px]"
-          style={{
-            background:
-              "radial-gradient(ellipse at 88% 18%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 150, 215, 0.8) 18%, rgba(235, 45, 140, 0.55) 38%, rgba(140, 18, 95, 0.22) 60%, transparent 75%)",
+              "radial-gradient(ellipse 90% 80% at 10% 12%, rgba(244, 63, 142, 0.75) 0%, rgba(219, 39, 119, 0.52) 22%, rgba(159, 18, 57, 0.28) 45%, rgba(90, 10, 45, 0.1) 65%, transparent 80%)",
             filter: "blur(42px)",
           }}
         />
+        {/* Angled light cone angling downwards-inwards */}
+        <div
+          className="absolute -top-10 -left-10 w-[42%] h-[380px]"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 190, 225, 0.85) 15%, rgba(244, 63, 142, 0.6) 35%, rgba(190, 24, 93, 0.25) 58%, transparent 78%)",
+            filter: "blur(28px)",
+          }}
+        />
+        {/* Hot white corner pinnacle */}
+        <div
+          className="absolute -top-6 -left-6 w-[26%] h-[240px]"
+          style={{
+            background:
+              "radial-gradient(circle at 14% 14%, #ffffff 0%, rgba(255, 220, 240, 0.95) 25%, rgba(255, 140, 195, 0.55) 50%, transparent 75%)",
+            filter: "blur(16px)",
+          }}
+        />
 
-        {/* ── Exact Half-Round Parabolic Aurora Arc (Cubic Bezier) ── */}
+        {/* ── 2. Right Corner Radiant Spotlight & Plume (Fills top-right with radiant glow) ── */}
+        {/* Deep ambient rose/magenta background glow */}
+        <div
+          className="absolute -top-16 -right-16 w-[52%] h-[520px]"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 80% at 90% 12%, rgba(244, 63, 142, 0.75) 0%, rgba(219, 39, 119, 0.52) 22%, rgba(159, 18, 57, 0.28) 45%, rgba(90, 10, 45, 0.1) 65%, transparent 80%)",
+            filter: "blur(42px)",
+          }}
+        />
+        {/* Angled light cone angling downwards-inwards */}
+        <div
+          className="absolute -top-10 -right-10 w-[42%] h-[380px]"
+          style={{
+            background:
+              "linear-gradient(225deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 190, 225, 0.85) 15%, rgba(244, 63, 142, 0.6) 35%, rgba(190, 24, 93, 0.25) 58%, transparent 78%)",
+            filter: "blur(28px)",
+          }}
+        />
+        {/* Hot white corner pinnacle */}
+        <div
+          className="absolute -top-6 -right-6 w-[26%] h-[240px]"
+          style={{
+            background:
+              "radial-gradient(circle at 86% 14%, #ffffff 0%, rgba(255, 220, 240, 0.95) 25%, rgba(255, 140, 195, 0.55) 50%, transparent 75%)",
+            filter: "blur(16px)",
+          }}
+        />
+
+        {/* ── 3. Smooth Tapered Celestial Arc (Thick at corners, Soft & Thin in middle) ── */}
         <svg
           aria-hidden
-          className="absolute top-0 left-0 w-full h-[520px] pointer-events-none"
-          viewBox="0 0 1440 520"
+          className="absolute top-0 left-0 w-full h-[460px] pointer-events-none"
+          viewBox="0 0 1440 460"
           preserveAspectRatio="none"
           fill="none"
         >
           <defs>
-            <linearGradient id="auroraBandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#e82f8a" stopOpacity="0.95" />
-              <stop offset="22%" stopColor="#d12078" stopOpacity="0.82" />
-              <stop offset="50%" stopColor="#9a1560" stopOpacity="0.55" />
-              <stop offset="78%" stopColor="#d12078" stopOpacity="0.82" />
-              <stop offset="92%" stopColor="#ff70bb" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.92" />
+            {/* Volumetric Diffuse Arc Gradient */}
+            <linearGradient id="taperedArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="8%" stopColor="#ffc2df" stopOpacity="0.95" />
+              <stop offset="18%" stopColor="#f43f8e" stopOpacity="0.85" />
+              <stop offset="32%" stopColor="#db2777" stopOpacity="0.55" />
+              <stop offset="44%" stopColor="#be185d" stopOpacity="0.35" />
+              <stop offset="50%" stopColor="#f43f8e" stopOpacity="0.3" />
+              <stop offset="56%" stopColor="#be185d" stopOpacity="0.35" />
+              <stop offset="68%" stopColor="#db2777" stopOpacity="0.55" />
+              <stop offset="82%" stopColor="#f43f8e" stopOpacity="0.85" />
+              <stop offset="92%" stopColor="#ffc2df" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
             </linearGradient>
 
-            <linearGradient id="auroraCoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ff75bf" stopOpacity="0.85" />
-              <stop offset="25%" stopColor="#e82b85" stopOpacity="0.7" />
-              <stop offset="50%" stopColor="#b5186b" stopOpacity="0.48" />
-              <stop offset="75%" stopColor="#ff75bf" stopOpacity="0.8" />
-              <stop offset="95%" stopColor="#ffffff" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.95" />
+            {/* Inner Crest Core Highlight Gradient */}
+            <linearGradient id="crestHighlightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="10%" stopColor="#ffe4f2" stopOpacity="0.9" />
+              <stop offset="25%" stopColor="#f472b6" stopOpacity="0.55" />
+              <stop offset="42%" stopColor="#fb7185" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#fb7185" stopOpacity="0.12" />
+              <stop offset="58%" stopColor="#fb7185" stopOpacity="0.2" />
+              <stop offset="75%" stopColor="#f472b6" stopOpacity="0.55" />
+              <stop offset="90%" stopColor="#ffe4f2" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
             </linearGradient>
 
-            <filter id="blurUltra" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="55" />
+            {/* Soft Gaussian Blurs */}
+            <filter id="blurWideArc" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="38" />
             </filter>
-            <filter id="blurMedium" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="26" />
+            <filter id="blurMidArc" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="20" />
             </filter>
-            <filter id="blurSharp" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="10" />
+            <filter id="blurSharpCrest" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="7" />
             </filter>
           </defs>
 
-          {/* Ambient wide diffuse atmospheric band */}
+          {/* 1. Volumetric Tapered Filled Arc Ribbon:
+              Thick at edges (~190px height), Narrow & thin at center dip (~42px height) */}
           <path
-            d="M -60 70 C 260 220, 520 380, 720 380 C 920 380, 1180 220, 1500 70"
-            stroke="url(#auroraBandGrad)"
-            strokeWidth="150"
-            fill="none"
-            filter="url(#blurUltra)"
+            d="M -40 -15 C 260 75, 500 235, 720 235 C 940 235, 1180 75, 1480 -15 L 1480 160 C 1180 170, 940 270, 720 270 C 500 270, 260 170, -40 160 Z"
+            fill="url(#taperedArcGrad)"
+            filter="url(#blurWideArc)"
             opacity="0.92"
           />
 
-          {/* Vibrant luminous body arc */}
+          {/* 2. Saturated Mid Arc Body */}
           <path
-            d="M -50 65 C 260 215, 520 375, 720 375 C 920 375, 1180 215, 1490 65"
-            stroke="url(#auroraCoreGrad)"
-            strokeWidth="65"
-            fill="none"
-            filter="url(#blurMedium)"
-            opacity="0.82"
+            d="M -40 -5 C 260 80, 500 236, 720 236 C 940 236, 1180 80, 1480 -5 L 1480 100 C 1180 130, 940 260, 720 260 C 500 260, 260 130, -40 100 Z"
+            fill="url(#taperedArcGrad)"
+            filter="url(#blurMidArc)"
+            opacity="0.8"
           />
 
-          {/* Core luminous ribbon */}
+          {/* 3. Refined Upper Crest Highlight Stroke */}
           <path
-            d="M -40 60 C 260 210, 520 370, 720 370 C 920 370, 1180 210, 1480 60"
-            stroke="url(#auroraCoreGrad)"
-            strokeWidth="20"
+            d="M -40 -10 C 260 78, 500 234, 720 234 C 940 234, 1180 78, 1480 -10"
+            stroke="url(#crestHighlightGrad)"
+            strokeWidth="12"
+            strokeLinecap="round"
             fill="none"
-            filter="url(#blurSharp)"
-            opacity="0.75"
+            filter="url(#blurSharpCrest)"
+            opacity="0.85"
           />
+
+          {/* ── Twinkling Celestial Stars matching Reference Image 1 ── */}
+          {/* Left Wing Stars */}
+          <circle cx="110" cy="75" r="1.7" fill="#ffffff" opacity="0.95" />
+          <circle cx="190" cy="135" r="1.3" fill="#ffd5ed" opacity="0.8" />
+          <circle cx="290" cy="60" r="1.9" fill="#ffffff" opacity="0.95" />
+          <circle cx="370" cy="160" r="1.4" fill="#ffffff" opacity="0.75" />
+
+          {/* Center Dark Void Stars (Clean, sharp and sparse) */}
+          <circle cx="540" cy="45" r="1.3" fill="#ffffff" opacity="0.9" />
+          <circle cx="720" cy="28" r="1.9" fill="#ffffff" opacity="1" />
+          <circle cx="900" cy="40" r="1.4" fill="#ffffff" opacity="0.85" />
+          <circle cx="730" cy="115" r="1.2" fill="#ffd1e8" opacity="0.75" />
+
+          {/* Right Wing Stars */}
+          <circle cx="1080" cy="150" r="1.4" fill="#ffd5ed" opacity="0.8" />
+          <circle cx="1160" cy="65" r="1.9" fill="#ffffff" opacity="0.95" />
+          <circle cx="1270" cy="125" r="1.4" fill="#ffffff" opacity="0.85" />
+          <circle cx="1360" cy="80" r="2" fill="#ffffff" opacity="1" />
+
+          {/* Lower Floating Stars */}
+          <circle cx="260" cy="305" r="1.4" fill="#ffffff" opacity="0.7" />
+          <circle cx="450" cy="320" r="1.1" fill="#ffb4dc" opacity="0.6" />
+          <circle cx="1000" cy="325" r="1.2" fill="#ffd1e8" opacity="0.65" />
+          <circle cx="1210" cy="305" r="1.5" fill="#ffffff" opacity="0.75" />
         </svg>
 
-        {/* ── Center dark celestial void ── frames the headline text */}
+        {/* ── 4. Deep Pitch-Black Top-Center Contrast Shield ── */}
+        {/* Ensures upper center behind headline remains pitch black */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[52%] h-[320px]"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[64%] h-[210px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 0%, #05040a 0%, rgba(7, 5, 15, 0.75) 50%, transparent 80%)",
-            filter: "blur(25px)",
+              "radial-gradient(ellipse 65% 75% at 50% 0%, #050409 0%, #050409 45%, rgba(5, 4, 9, 0.85) 68%, transparent 100%)",
+            filter: "blur(14px)",
+          }}
+        />
+
+        {/* ── 5. Bottom Vignette Shadow to cleanly separate email & grid ── */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[100px]"
+          style={{
+            background: "linear-gradient(to top, #050409 20%, rgba(5, 4, 9, 0.7) 60%, transparent 100%)",
           }}
         />
       </div>
 
-      {/* ═══════════════════════════
-          HERO TEXT BLOCK
-      ═══════════════════════════ */}
-      <div className="relative z-10 w-full flex flex-col items-center text-center pt-12 pb-6 px-4">
+      {/* ══════════════════════════════════════════════════════
+          HERO TEXT & EMAIL SUBSCRIPTION BLOCK (MATCHING REFERENCE IMAGE 2)
+      ══════════════════════════════════════════════════════ */}
+      <div className="relative z-10 w-full flex flex-col items-center text-center pt-8 sm:pt-10 pb-4 px-4">
 
-        {/* Headline — Light, elegant, modern sans-serif matching Reference Image 2 */}
+        {/* Headline — Light, elegant, modern geometric typography matching Reference Image 2 */}
         <h1
-          className="font-light text-white leading-[1.12] tracking-[-0.015em] max-w-[660px]"
-          style={{ fontSize: "clamp(36px, 4.2vw, 56px)" }}
+          className="text-white leading-[1.12] tracking-[-0.02em] max-w-[760px]"
+          style={{
+            fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
+            fontSize: "clamp(42px, 4.8vw, 62px)",
+            fontWeight: 400,
+            letterSpacing: "-0.02em",
+          }}
         >
           Invest Crypto Smarter
-          <span className="block">With AI Assistant</span>
+          <span className="block font-light text-white/95">With AI Assistant</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-3.5 text-[13.5px] sm:text-[14.5px] text-[#9ca3af] font-light leading-relaxed max-w-[520px]">
+        <p
+          className="mt-3.5 text-[15px] sm:text-[16px] text-[#a1a7b8] leading-relaxed max-w-[580px]"
+          style={{
+            fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
+            fontWeight: 300,
+          }}
+        >
           Explore market opportunities and grow your portfolio with AI insights.
         </p>
 
-        {/* ── Unified Email Subscribe Pill Capsule (matching red-annotated circle) ── */}
+        {/* ── Unified Email Subscribe Pill Capsule (matching Reference Image 2) ── */}
         <form
           onSubmit={handleSubmit}
-          className="mt-6.5 flex items-center justify-between w-full max-w-[460px] h-[46px] p-1 rounded-full border border-white/[0.12] bg-[#120e20]/90 backdrop-blur-md shadow-[0_6px_25px_rgba(0,0,0,0.5)]"
+          className="mt-6 flex items-center justify-between w-full max-w-[460px] h-[48px] p-1.5 rounded-full border border-white/[0.12] bg-[#120e1d]/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.7)]"
         >
           {/* Input field inside pill */}
           <input
@@ -172,7 +264,11 @@ export default function HeroSection() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email here"
-            className="flex-1 bg-transparent px-4 sm:px-5 text-[12.5px] sm:text-[13px] text-white placeholder-[#6b7280] focus:outline-none"
+            className="flex-1 bg-transparent px-4 sm:px-5 text-[13.5px] text-white placeholder-[#717888] focus:outline-none"
+            style={{
+              fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
+              fontWeight: 300,
+            }}
             required
           />
 
@@ -181,7 +277,8 @@ export default function HeroSection() {
             type="submit"
             className="flex-shrink-0 flex items-center gap-1.5 h-[38px] px-5 sm:px-6 rounded-full text-[12.5px] font-medium text-white cursor-pointer whitespace-nowrap transition-all hover:brightness-110 active:scale-95 shadow-[0_0_20px_rgba(219,50,136,0.45)] hover:shadow-[0_0_28px_rgba(219,50,136,0.65)]"
             style={{
-              background: "linear-gradient(90deg, #8326d9 0%, #db3288 100%)",
+              background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
+              fontFamily: "var(--font-outfit), var(--font-sans), sans-serif",
             }}
           >
             <span>{subscribed ? "Subscribed!" : "Subscribe For Free"}</span>
@@ -190,10 +287,9 @@ export default function HeroSection() {
         </form>
       </div>
 
-      {/* ═══════════════════════════
-          BENTO CARD GRID
-          Overflows frame on left/right for the 3D floating effect
-      ═══════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════
+          BENTO CARD GRID (MATCHING REFERENCE IMAGE 2)
+      ══════════════════════════════════════════════════════ */}
       <HeroUnfoldingGrid />
     </section>
   );

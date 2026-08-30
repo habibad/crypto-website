@@ -25,7 +25,7 @@ export default function Home() {
       <div className="w-full max-w-[1560px] mx-auto px-3 sm:px-6 lg:px-8 mb-16">
         <div
           className="relative w-full overflow-hidden rounded-[32px] border border-white/[0.09] shadow-[0_25px_90px_rgba(0,0,0,0.85)] min-h-[calc(100vh-84px)] flex flex-col justify-between"
-          style={{ background: "linear-gradient(175deg, #100b1d 0%, #080610 40%, #0b0916 100%)" }}
+          style={{ background: "#050409" }}
         >
           {/* Starfield particle bg layer */}
           <StarfieldCanvas />

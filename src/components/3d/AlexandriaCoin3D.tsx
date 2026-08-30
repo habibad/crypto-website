@@ -25,14 +25,20 @@ export default function AlexandriaCoin3D({
     const height = container.clientHeight || size;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 4.8);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    camera.position.set(0, -0.05, 5.2);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance",
+      preserveDrawingBuffer: false,
+    });
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
     // Main Coin Group
@@ -74,7 +80,7 @@ export default function AlexandriaCoin3D({
         vec3 viewDir = normalize(vViewPosition);
 
         vec3 lightDir1 = normalize(vec3(0.6 + uMouse.x * 0.4, 0.8 + uMouse.y * 0.4, 1.2));
-        vec3 lightDir2 = normalize(vec3(-0.8, -0.4, 0.6));
+        vec3 lightDir2 = normalize(vec3(-0.8, -0.5, 0.5));
 
         float diff1 = max(dot(normal, lightDir1), 0.0);
         float diff2 = max(dot(normal, lightDir2), 0.0) * 0.4;
@@ -89,7 +95,7 @@ export default function AlexandriaCoin3D({
 
         vec3 base = mix(uBaseColor, vec3(0.92, 0.90, 1.0), (diff1 + diff2) * 0.6);
         vec3 finalColor = base + (spec * 1.1 + aniso) * uGlintColor;
-        finalColor += fresnel * uRimColor * 1.6;
+        finalColor += fresnel * uRimColor * 1.4;
 
         gl_FragColor = vec4(finalColor, 1.0);
       }
@@ -113,10 +119,10 @@ export default function AlexandriaCoin3D({
 
         vec3 halfDir = normalize(lightDir + viewDir);
         float spec = pow(max(dot(normal, halfDir), 0.0), 48.0);
-        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
 
         vec3 baseWhite = vec3(0.98, 0.98, 1.0);
-        vec3 finalColor = baseWhite * (0.85 + diff * 0.25) + spec * vec3(1.0) * 1.2 + fresnel * vec3(0.7, 0.6, 1.0) * 0.5;
+        vec3 finalColor = baseWhite * (0.88 + diff * 0.22) + spec * vec3(1.0) * 1.3 + fresnel * vec3(0.75, 0.68, 1.0) * 0.55;
 
         gl_FragColor = vec4(finalColor, 1.0);
       }
@@ -148,35 +154,35 @@ export default function AlexandriaCoin3D({
     });
 
     // 1. Cylinder Base Coin (Chunky luxury 3D token matching Image 2)
-    const coinGeometry = new THREE.CylinderGeometry(1.4, 1.4, 0.26, 64);
+    const coinGeometry = new THREE.CylinderGeometry(1.22, 1.22, 0.26, 64);
     const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
     coinMesh.rotation.x = Math.PI / 2;
     coinGroup.add(coinMesh);
 
     // 2. Outer Rim Ring with Chamfer
-    const torusGeometry = new THREE.TorusGeometry(1.41, 0.12, 32, 64);
+    const torusGeometry = new THREE.TorusGeometry(1.23, 0.11, 32, 64);
     const torusMesh = new THREE.Mesh(torusGeometry, coinMaterial);
     coinGroup.add(torusMesh);
 
     // 3. Inner Beveled Emblem Ring
-    const innerRingGeo = new THREE.TorusGeometry(1.22, 0.05, 24, 64);
+    const innerRingGeo = new THREE.TorusGeometry(1.06, 0.05, 24, 64);
     const innerRingMesh = new THREE.Mesh(innerRingGeo, coinMaterial);
     coinGroup.add(innerRingMesh);
 
     // 4. Extruded Alexandria White Diamond Shape
     const diamondShape = new THREE.Shape();
-    diamondShape.moveTo(0, 0.72);
-    diamondShape.lineTo(0.58, 0.0);
-    diamondShape.lineTo(0, -0.72);
-    diamondShape.lineTo(-0.58, 0.0);
+    diamondShape.moveTo(0, 0.62);
+    diamondShape.lineTo(0.5, 0.0);
+    diamondShape.lineTo(0, -0.62);
+    diamondShape.lineTo(-0.5, 0.0);
     diamondShape.closePath();
 
     // Inner cutout diamond
     const holeShape = new THREE.Path();
-    holeShape.moveTo(0, 0.44);
-    holeShape.lineTo(0.34, 0.0);
-    holeShape.lineTo(0, -0.44);
-    holeShape.lineTo(-0.34, 0.0);
+    holeShape.moveTo(0, 0.38);
+    holeShape.lineTo(0.29, 0.0);
+    holeShape.lineTo(0, -0.38);
+    holeShape.lineTo(-0.29, 0.0);
     holeShape.closePath();
     diamondShape.holes.push(holeShape);
 
@@ -185,7 +191,7 @@ export default function AlexandriaCoin3D({
       depth: 0.22,
       bevelEnabled: true,
       bevelThickness: 0.05,
-      bevelSize: 0.04,
+      bevelSize: 0.035,
       bevelSegments: 5,
     };
 
@@ -204,8 +210,8 @@ export default function AlexandriaCoin3D({
     coinGroup.add(backEmblem);
 
     // Default 3D isometric tilt (matching Image 2)
-    coinGroup.rotation.x = 0.35;
-    coinGroup.rotation.y = -0.42;
+    coinGroup.rotation.x = 0.38;
+    coinGroup.rotation.y = -0.46;
     coinGroup.rotation.z = 0.12;
 
     // Mouse Interaction handlers
@@ -257,10 +263,10 @@ export default function AlexandriaCoin3D({
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.08;
 
       // Continuous gentle rotation + mouse tilt matching isometric reference
-      const baseRotY = -0.42 + Math.sin(elapsedTime * 0.5) * 0.06;
-      coinGroup.rotation.y = baseRotY + mouseRef.current.x * 0.35;
-      coinGroup.rotation.x = 0.35 - mouseRef.current.y * 0.3;
-      coinGroup.rotation.z = 0.12 + Math.sin(elapsedTime * 0.4) * 0.02 + mouseRef.current.x * 0.08;
+      const baseRotY = -0.46 + Math.sin(elapsedTime * 0.4) * 0.04;
+      coinGroup.rotation.y = baseRotY + mouseRef.current.x * 0.3;
+      coinGroup.rotation.x = 0.38 - mouseRef.current.y * 0.25;
+      coinGroup.rotation.z = 0.12 + Math.sin(elapsedTime * 0.3) * 0.02 + mouseRef.current.x * 0.06;
 
       // Update uniforms
       coinMaterial.uniforms.uTime.value = elapsedTime;

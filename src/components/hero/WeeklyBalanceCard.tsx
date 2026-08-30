@@ -7,25 +7,47 @@ export default function WeeklyBalanceCard() {
   const [timeframe] = useState("Weekly");
 
   return (
-    <div className="rounded-2xl p-4.5 w-full flex flex-col justify-between border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden bg-[#120f1c]/90 backdrop-blur-xl h-[195px]">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
-        <span className="text-[12.5px] text-[#9ca3af] font-medium">My Portfolio</span>
-        <button className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/5 border border-white/10 text-[11px] text-[#9ca3af] hover:text-white transition-colors cursor-pointer">
+    <div
+      id="weekly-balance-card"
+      className="rounded-2xl p-5 w-full flex flex-col justify-between border border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden bg-[#120f1c]/90 backdrop-blur-xl h-[205px] select-none"
+    >
+      {/* Header Row */}
+      <div className="flex items-start justify-between">
+        <div>
+          <span
+            className="text-[13px] text-[#9ca3af] font-medium tracking-wide"
+            style={{ fontFamily: "var(--font-outfit), sans-serif" }}
+          >
+            My Portfolio
+          </span>
+          <div
+            className="text-[28px] font-bold text-white tracking-tight mt-0.5"
+            style={{ fontFamily: "var(--font-outfit), sans-serif" }}
+          >
+            $1.948.121
+          </div>
+        </div>
+
+        {/* Weekly Dropdown Pill */}
+        <button
+          type="button"
+          className="flex items-center gap-1 px-3 py-1 rounded-lg bg-white/[0.06] border border-white/[0.08] text-[12px] text-gray-300 hover:text-white transition-colors cursor-pointer"
+          style={{ fontFamily: "var(--font-outfit), sans-serif" }}
+        >
           <span>{timeframe}</span>
-          <ChevronDown className="w-3 h-3 opacity-60" />
+          <ChevronDown className="w-3.5 h-3.5 opacity-70" />
         </button>
       </div>
 
-      {/* Main Value */}
-      <div className="text-[25px] font-bold text-white tracking-tight mt-0.5 font-mono">
-        $1.948.121
-      </div>
-
-      {/* Delta Badge */}
-      <div className="mt-0.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold self-start">
-        <TrendingUp className="w-3 h-3" />
-        <span>+2.537,12 (9,73%)</span>
+      {/* Floating Positive Delta Badge */}
+      <div className="flex justify-end -mt-1 mr-3 z-10">
+        <div
+          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11.5px] font-semibold shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+          style={{ fontFamily: "var(--font-outfit), sans-serif" }}
+        >
+          <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span>+2.537,12 (9,73%)</span>
+        </div>
       </div>
 
       {/* Glowing Neon Chart Curve */}
@@ -63,3 +85,4 @@ export default function WeeklyBalanceCard() {
     </div>
   );
 }
+

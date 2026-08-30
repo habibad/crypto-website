@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700"],
+});
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -33,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} dark antialiased selection:bg-[#E03E99] selection:text-white`}>
+    <html lang="en" className={`${outfit.variable} ${jakarta.variable} ${jetbrainsMono.variable} dark antialiased selection:bg-[#E03E99] selection:text-white`}>
       <body className="min-h-screen bg-[#070709] text-gray-100 font-sans flex flex-col overflow-x-hidden">
         {children}
       </body>

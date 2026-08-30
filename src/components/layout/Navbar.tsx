@@ -18,13 +18,14 @@ export default function Navbar() {
   return (
     <header
       id="main-navbar"
-      className="w-full max-w-[1536px] mx-auto h-[64px] px-4 sm:px-6 lg:px-8 flex items-center justify-between z-40 relative select-none"
+      className="w-full max-w-[1536px] mx-auto h-[60px] px-4 sm:px-6 lg:px-8 flex items-center justify-between z-40 relative select-none"
+      style={{ fontFamily: "var(--font-outfit), var(--font-sans), sans-serif" }}
     >
       {/* Brand Logo */}
       <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
         {/* Small gradient circle icon like reference */}
-        <div className="w-[26px] h-[26px] rounded-full bg-gradient-to-tr from-[#7928CA] to-[#E03E99] flex items-center justify-center shadow-[0_0_10px_rgba(224,62,153,0.45)] group-hover:scale-105 transition-transform flex-shrink-0">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <div className="w-[24px] h-[24px] rounded-full bg-gradient-to-tr from-[#7928CA] to-[#E03E99] flex items-center justify-center shadow-[0_0_10px_rgba(224,62,153,0.45)] group-hover:scale-105 transition-transform flex-shrink-0">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
             <path d="M6 1L9 5H7V11H5V5H3L6 1Z" fill="white" />
           </svg>
         </div>
@@ -47,11 +48,11 @@ export default function Navbar() {
       </nav>
 
       {/* Right: Login + Get Started */}
-      <div className="hidden md:flex items-center gap-5">
-        <button className="text-[12.5px] text-[#c9d0db] hover:text-white transition-colors cursor-pointer font-normal">
+      <div className="hidden md:flex items-center gap-4">
+        <button className="text-[12px] text-[#c9d0db] hover:text-white transition-colors cursor-pointer font-normal">
           Login
         </button>
-        <button className="px-4 py-[6px] rounded-full border border-white/20 bg-transparent hover:bg-white/5 text-[12.5px] font-normal text-white flex items-center gap-1 transition-all cursor-pointer">
+        <button className="px-3.5 py-[5px] rounded-full border border-white/20 bg-transparent hover:bg-white/5 text-[12px] font-normal text-white flex items-center gap-1 transition-all cursor-pointer">
           <span>Get started now</span>
           <ChevronRight className="w-3 h-3 text-gray-400" />
         </button>
