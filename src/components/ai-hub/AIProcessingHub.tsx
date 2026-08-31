@@ -28,9 +28,9 @@ const tokensLeft: TokenItem[] = [
     bgColor: "#222a42",
     textColor: "#627eea",
     size: "sm",
-    yOffset: 38,
+    yOffset: 46,
     icon: (
-      <svg viewBox="0 0 24 24" fill="#8da4f7" className="w-[55%] h-[55%]">
+      <svg viewBox="0 0 24 24" fill="#8da4f7" className="w-[58%] h-[58%]">
         <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
       </svg>
     ),
@@ -40,17 +40,17 @@ const tokensLeft: TokenItem[] = [
     bgColor: "#F7931A",
     textColor: "#ffffff",
     size: "md",
-    yOffset: 24,
-    icon: <span className="font-bold text-lg leading-none">₿</span>,
+    yOffset: 30,
+    icon: <span className="font-bold text-xl leading-none">₿</span>,
   },
   {
     symbol: "XRP",
     bgColor: "#000000",
     textColor: "#ffffff",
     size: "md",
-    yOffset: 14,
+    yOffset: 16,
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" className="w-[50%] h-[50%]">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" className="w-[52%] h-[52%]">
         <path d="M4 4l5 5-5 5M20 4l-5 5 5 5" />
       </svg>
     ),
@@ -63,7 +63,7 @@ const tokensLeft: TokenItem[] = [
     yOffset: 6,
     icon: (
       <div className="w-full h-full rounded-full bg-[#FFA409] flex items-center justify-center p-1 border-2 border-white">
-        <span className="text-xl">🐕</span>
+        <span className="text-2xl">🐕</span>
       </div>
     ),
   },
@@ -72,9 +72,9 @@ const tokensLeft: TokenItem[] = [
     bgColor: "#2A5ADA",
     textColor: "#ffffff",
     size: "lg",
-    yOffset: 2,
+    yOffset: 0,
     icon: (
-      <svg viewBox="0 0 32 32" fill="#ffffff" className="w-[58%] h-[58%]">
+      <svg viewBox="0 0 32 32" fill="#ffffff" className="w-[60%] h-[60%]">
         <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
       </svg>
     ),
@@ -87,8 +87,8 @@ const tokensRight: TokenItem[] = [
     bgColor: "#26A17B",
     textColor: "#ffffff",
     size: "lg",
-    yOffset: 2,
-    icon: <span className="font-bold text-xl leading-none text-white">₮</span>,
+    yOffset: 0,
+    icon: <span className="font-bold text-2xl leading-none text-white">₮</span>,
   },
   {
     symbol: "LUNA",
@@ -98,7 +98,7 @@ const tokensRight: TokenItem[] = [
     yOffset: 6,
     icon: (
       <div className="w-full h-full rounded-full bg-[#101B37] flex items-center justify-center border border-yellow-400/40">
-        <span className="text-xl">🌙</span>
+        <span className="text-2xl">🌙</span>
       </div>
     ),
   },
@@ -107,9 +107,9 @@ const tokensRight: TokenItem[] = [
     bgColor: "#F3BA2F",
     textColor: "#000000",
     size: "md",
-    yOffset: 14,
+    yOffset: 16,
     icon: (
-      <svg viewBox="0 0 24 24" fill="#000000" className="w-[60%] h-[60%]">
+      <svg viewBox="0 0 24 24" fill="#000000" className="w-[62%] h-[62%]">
         <path d="M12 2l3.5 3.5-3.5 3.5-3.5-3.5L12 2zm0 13l3.5 3.5-3.5 3.5-3.5-3.5L12 15zm-6.5-6.5L9 12l-3.5 3.5L2 12l3.5-3.5zm13 0L22 12l-3.5 3.5L15 12l3.5-3.5zM12 9l3 3-3 3-3-3 3-3z" />
       </svg>
     ),
@@ -119,10 +119,10 @@ const tokensRight: TokenItem[] = [
     bgColor: "#131d36",
     textColor: "#38bdf8",
     size: "sm",
-    yOffset: 24,
+    yOffset: 30,
     icon: (
       <div className="w-full h-full rounded-full bg-[#0c1322] border border-cyan-500/40 flex items-center justify-center">
-        <span className="text-sm font-bold text-cyan-400">🌊</span>
+        <span className="text-base font-bold text-cyan-400">🌊</span>
       </div>
     ),
   },
@@ -131,8 +131,8 @@ const tokensRight: TokenItem[] = [
     bgColor: "#111116",
     textColor: "#888888",
     size: "sm",
-    yOffset: 38,
-    icon: <span className="font-mono font-bold text-[#aaa] text-sm">Ħ</span>,
+    yOffset: 46,
+    icon: <span className="font-mono font-bold text-[#aaa] text-base">Ħ</span>,
   },
 ];
 
@@ -389,29 +389,29 @@ export default function AIProcessingHub() {
       {/* ══════════════════════════════════════════════════════════════════════
           UNIFIED DESKTOP STAGE (EXACT 1:1 WITH REFERENCE IMAGES)
       ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative w-full hidden md:block" style={{ height: "920px", maxWidth: "1600px" }}>
+      <div className="relative w-full hidden md:block" style={{ height: "980px", maxWidth: "1600px" }}>
 
         {/* 1. ATMOSPHERIC PINK-PURPLE AURA BENEATH CRESCENT (Strictly downwards, extended +80px) */}
         <div
           ref={centerAuroraBloomRef}
           className="absolute inset-x-0 pointer-events-none z-[2]"
           style={{
-            top: "460px",
-            height: "540px",
+            top: "500px",
+            height: "480px",
             background:
               "radial-gradient(ellipse 65% 100% at 50% 0%, rgba(219,39,119,0.38) 0%, rgba(168,85,247,0.2) 45%, transparent 85%)",
             filter: "blur(35px)",
           }}
         />
 
-        {/* 2. WHITE-HOT HORIZONTAL FLARE BENEATH THE CTA BUTTON (Downward spread) */}
+        {/* 2. WHITE-HOT HORIZONTAL FLARE BENEATH THE CTA BUTTON (Downward spread with plenty of clearance) */}
         <div
           ref={centerFlareRef}
           className="absolute pointer-events-none z-[8]"
           style={{
             left: "50%",
-            top: "430px",
-            width: "480px",
+            top: "480px",
+            width: "500px",
             height: "140px",
             transform: "translateX(-50%)",
             background:
@@ -426,7 +426,7 @@ export default function AIProcessingHub() {
           className="absolute pointer-events-none z-[6]"
           style={{
             left: "50%",
-            top: "430px",
+            top: "480px",
             width: "240px",
             height: "360px",
             transform: "translateX(-50%)",
@@ -439,7 +439,7 @@ export default function AIProcessingHub() {
         {/* 4. FULL-WIDTH SVG: PROGRESSIVE LEFT & RIGHT CONVERGING CURVES WITH CO-TRAVELING GLOW */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none z-[10]"
-          viewBox="0 0 1600 920"
+          viewBox="0 0 1600 980"
           preserveAspectRatio="none"
           fill="none"
         >
@@ -468,7 +468,7 @@ export default function AIProcessingHub() {
 
             {/* Strict Downward Clip: Only allows glow to expand downwards beneath the crescent arch */}
             <clipPath id="crescentDownwardClip">
-              <path d="M 0 160 C 400 400, 600 430, 800 430 C 1000 430, 1200 400, 1600 160 L 1600 920 L 0 920 Z" />
+              <path d="M 0 170 C 400 420, 600 480, 800 480 C 1000 480, 1200 420, 1600 170 L 1600 980 L 0 980 Z" />
             </clipPath>
           </defs>
 
@@ -478,7 +478,7 @@ export default function AIProcessingHub() {
             {/* Deep atmospheric underglow reaching ~190px+ downwards */}
             <path
               ref={crescentLeftGlowRef}
-              d="M 0 160 C 400 400, 600 430, 800 430"
+              d="M 0 170 C 400 420, 600 480, 800 480"
               stroke="rgba(219,39,119,0.32)"
               strokeWidth="280"
               strokeLinecap="butt"
@@ -487,7 +487,7 @@ export default function AIProcessingHub() {
             {/* Mid magenta-pink aura */}
             <path
               ref={crescentLeftBaseRef}
-              d="M 0 160 C 400 400, 600 430, 800 430"
+              d="M 0 170 C 400 420, 600 480, 800 480"
               stroke="rgba(236,72,153,0.55)"
               strokeWidth="150"
               strokeLinecap="butt"
@@ -496,7 +496,7 @@ export default function AIProcessingHub() {
             {/* Soft radiant core matching the pink/magenta glow without hard line */}
             <path
               ref={crescentLeftLaserRef}
-              d="M 0 160 C 400 400, 600 430, 800 430"
+              d="M 0 170 C 400 420, 600 480, 800 480"
               stroke="url(#sharpCrescentGradLeft)"
               strokeWidth="38"
               strokeLinecap="butt"
@@ -507,7 +507,7 @@ export default function AIProcessingHub() {
             {/* Deep atmospheric underglow reaching ~190px+ downwards */}
             <path
               ref={crescentRightGlowRef}
-              d="M 1600 160 C 1200 400, 1000 430, 800 430"
+              d="M 1600 170 C 1200 420, 1000 480, 800 480"
               stroke="rgba(219,39,119,0.32)"
               strokeWidth="280"
               strokeLinecap="butt"
@@ -516,7 +516,7 @@ export default function AIProcessingHub() {
             {/* Mid magenta-pink aura */}
             <path
               ref={crescentRightBaseRef}
-              d="M 1600 160 C 1200 400, 1000 430, 800 430"
+              d="M 1600 170 C 1200 420, 1000 480, 800 480"
               stroke="rgba(236,72,153,0.55)"
               strokeWidth="150"
               strokeLinecap="butt"
@@ -525,7 +525,7 @@ export default function AIProcessingHub() {
             {/* Soft radiant core matching the pink/magenta glow without hard line */}
             <path
               ref={crescentRightLaserRef}
-              d="M 1600 160 C 1200 400, 1000 430, 800 430"
+              d="M 1600 170 C 1200 420, 1000 480, 800 480"
               stroke="url(#sharpCrescentGradRight)"
               strokeWidth="38"
               strokeLinecap="butt"
@@ -536,7 +536,7 @@ export default function AIProcessingHub() {
           {/* Downward Waterfall Core Laser (Thicker & deeply luminous) */}
           <path
             ref={waterfallLaserRef}
-            d="M 800 430 L 800 680"
+            d="M 800 480 L 800 705"
             stroke="url(#sharpWaterfallGrad)"
             strokeWidth="32"
             strokeLinecap="round"
@@ -547,22 +547,22 @@ export default function AIProcessingHub() {
         {/* 5. TOP CURVED TOKEN ARCH & ROCKET SPEEDOMETER (MATCHING IMAGE 1) */}
         <div
           ref={orbitBarRef}
-          className="absolute z-20 top-2 left-1/2 -translate-x-1/2 w-full max-w-[1280px] px-6 flex items-center justify-center gap-5"
+          className="absolute z-20 top-3 left-1/2 -translate-x-1/2 w-full max-w-[1380px] px-6 flex items-center justify-center gap-6 lg:gap-10"
         >
           {/* Left 5 Tokens with gentle arch curve alignment */}
-          <div className="flex items-center gap-3.5 flex-1 justify-end">
+          <div className="flex items-center gap-4 lg:gap-5 flex-1 justify-end">
             {tokensLeft.map((tk) => {
               const sizeClasses =
                 tk.size === "sm"
-                  ? "w-11 h-11"
+                  ? "w-13 h-13 lg:w-14 lg:h-14"
                   : tk.size === "lg"
-                    ? "w-15 h-15"
-                    : "w-13 h-13";
+                    ? "w-17 h-17 lg:w-20 lg:h-20"
+                    : "w-15 h-15 lg:w-17 lg:h-17";
 
               return (
                 <div
                   key={tk.symbol}
-                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}
+                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_6px_20px_rgba(0,0,0,0.65)]`}
                   style={{
                     backgroundColor: tk.bgColor,
                     transform: `translateY(${tk.yOffset}px)`,
@@ -577,7 +577,7 @@ export default function AIProcessingHub() {
           </div>
 
           {/* Center Rocket Speedometer Badge with Layered Concentric Rings */}
-          <div className="relative shrink-0 flex items-center justify-center w-28 h-28 lg:w-34 lg:h-34">
+          <div className="relative shrink-0 flex items-center justify-center w-32 h-32 lg:w-36 lg:h-36">
             {/* Outer dark stepped ring */}
             <div
               className="absolute inset-0 rounded-full bg-[#0a0c13] border border-white/10 shadow-[0_0_35px_rgba(219,39,119,0.25)] flex items-center justify-center"
@@ -606,25 +606,25 @@ export default function AIProcessingHub() {
                     </linearGradient>
                   </defs>
                 </svg>
-                <Rocket className="relative z-10 w-9 h-9 text-white stroke-[2.2] drop-shadow-[0_0_12px_rgba(255,255,255,0.9)]" />
+                <Rocket className="relative z-10 w-11 h-11 text-white stroke-[2.2] drop-shadow-[0_0_14px_rgba(255,255,255,0.95)]" />
               </div>
             </div>
           </div>
 
           {/* Right 5 Tokens with gentle arch curve alignment */}
-          <div className="flex items-center gap-3.5 flex-1 justify-start">
+          <div className="flex items-center gap-4 lg:gap-5 flex-1 justify-start">
             {tokensRight.map((tk) => {
               const sizeClasses =
                 tk.size === "sm"
-                  ? "w-11 h-11"
+                  ? "w-13 h-13 lg:w-14 lg:h-14"
                   : tk.size === "lg"
-                    ? "w-15 h-15"
-                    : "w-13 h-13";
+                    ? "w-17 h-17 lg:w-20 lg:h-20"
+                    : "w-15 h-15 lg:w-17 lg:h-17";
 
               return (
                 <div
                   key={tk.symbol}
-                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}
+                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_6px_20px_rgba(0,0,0,0.65)]`}
                   style={{
                     backgroundColor: tk.bgColor,
                     transform: `translateY(${tk.yOffset}px)`,
@@ -639,14 +639,14 @@ export default function AIProcessingHub() {
           </div>
         </div>
 
-        {/* 6. HEADLINE & BUTTONS (Framed inside the planetary crescent) */}
+        {/* 6. HEADLINE & BUTTONS (Framed inside the planetary crescent with generous breathing room) */}
         <div
           ref={headerWrapRef}
           className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center text-center w-full max-w-2xl"
-          style={{ top: "155px" }}
+          style={{ top: "165px" }}
         >
           <h2
-            className="text-white text-4xl lg:text-[54px] font-light tracking-tight leading-[1.12]"
+            className="text-white text-4xl lg:text-[54px] font-light tracking-tight leading-[1.14]"
             style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
           >
             10K+ Crypto Assets <br />
@@ -655,23 +655,23 @@ export default function AIProcessingHub() {
             </span>
           </h2>
           <p
-            className="mt-3 text-sm lg:text-[15px] text-gray-400 font-light max-w-md leading-relaxed"
+            className="mt-3.5 text-sm lg:text-[15px] text-gray-300 font-light max-w-lg leading-relaxed"
             style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
           >
             Explore every potential Crypto Assets with AI assistance
           </p>
 
           {/* Buttons */}
-          <div className="mt-5 flex items-center gap-5">
+          <div className="mt-6 flex items-center gap-6">
             <button
               type="button"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer font-medium px-2 py-1"
+              className="text-sm text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer font-medium px-3 py-1.5"
             >
               Learn More
             </button>
             <button
               type="button"
-              className="rounded-full px-6 py-2.5 text-sm font-medium text-white flex items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_24px_rgba(219,39,119,0.45)]"
+              className="rounded-full px-7 py-3 text-sm font-medium text-white flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_28px_rgba(219,39,119,0.5)]"
               style={{
                 background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
               }}
@@ -687,7 +687,7 @@ export default function AIProcessingHub() {
         ══════════════════════════════════════════════════════════════════════ */}
         <div
           className="absolute z-20 left-1/2 -translate-x-1/2 w-full max-w-[1040px]"
-          style={{ top: "630px", height: "280px" }}
+          style={{ top: "670px", height: "280px" }}
         >
           {/* Dedicated SVG for the 4 S-curve circuit wires */}
           <svg

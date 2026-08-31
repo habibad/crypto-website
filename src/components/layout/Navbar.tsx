@@ -29,13 +29,13 @@ export default function Navbar() {
             <path d="M6 1L9 5H7V11H5V5H3L6 1Z" fill="white" />
           </svg>
         </div>
-        <span className="text-[13.5px] font-semibold text-white tracking-tight">
+        <span className="text-[16px] font-semibold text-white tracking-tight">
           Quantra AI
         </span>
       </Link>
 
       {/* Center Nav Links (Desktop) */}
-      <nav className="hidden md:flex items-center gap-8 text-[12.5px] text-[#8a91a0] font-normal absolute left-1/2 -translate-x-1/2">
+      <nav className="hidden md:flex items-center gap-8 text-[16px] text-[#8a91a0] font-normal absolute left-1/2 -translate-x-1/2">
         {navLinks.map((link) => (
           <a
             key={link.label}
