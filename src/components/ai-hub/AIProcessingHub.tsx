@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useLayoutEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { ArrowRight, Globe, Check, Users, Database, Cpu, Rocket } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -87,7 +87,7 @@ const leftTokens: Token[] = [
     glow: "#375BD2",
     icon: (
       <svg viewBox="0 0 32 32" fill="#ffffff" className="w-[55%] h-[55%]">
-        <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
+        <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
       </svg>
     ),
   },
@@ -201,7 +201,17 @@ export default function AIProcessingHub() {
   const wideGlowRef = useRef<HTMLDivElement>(null);
   const coreGlowRef = useRef<HTMLDivElement>(null);
   const beamRef = useRef<HTMLDivElement>(null);
+
+  // The "pipeline" sweep: three stacked strokes per side (soft outer glow,
+  // mid glow, sharp core line) sharing the same curve path and the same
+  // stroke-dashoffset reveal, so they travel together from the outer edge
+  // toward the center dip — reproducing the left/right-in, meet-at-center
+  // motion from the reference footage, instead of a flat opacity crossfade.
+  const leftOuterGlowRef = useRef<SVGPathElement>(null);
+  const leftMidGlowRef = useRef<SVGPathElement>(null);
   const leftEnergyRef = useRef<SVGPathElement>(null);
+  const rightOuterGlowRef = useRef<SVGPathElement>(null);
+  const rightMidGlowRef = useRef<SVGPathElement>(null);
   const rightEnergyRef = useRef<SVGPathElement>(null);
 
   const chipAuraRef = useRef<HTMLDivElement>(null);
@@ -214,6 +224,8 @@ export default function AIProcessingHub() {
   const wireBottomRightRef = useRef<SVGPathElement>(null);
 
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const mobileOrbitRef = useRef<HTMLDivElement>(null);
+  const mobileHeaderWrapRef = useRef<HTMLDivElement>(null);
   const mobileCardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const mobileWireRefs = useRef<Array<SVGPathElement | null>>([]);
   const mobileChipCoreRef = useRef<HTMLDivElement>(null);
@@ -223,11 +235,18 @@ export default function AIProcessingHub() {
   // MASTER SCROLL PROGRESS — one GSAP timeline (0 → 1), scrubbed against
   // the hub's transit through the viewport. No pinning; natural page flow.
   // ══════════════════════════════════════════════════════════════════════
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!hubRef.current) return;
 
     const ctx = gsap.context(() => {
-      const energyPaths = [leftEnergyRef.current, rightEnergyRef.current];
+      const sweepPaths = [
+        leftOuterGlowRef.current,
+        leftMidGlowRef.current,
+        leftEnergyRef.current,
+        rightOuterGlowRef.current,
+        rightMidGlowRef.current,
+        rightEnergyRef.current,
+      ];
       const wirePaths = [
         wireTopLeftRef.current,
         wireBottomLeftRef.current,
@@ -235,7 +254,7 @@ export default function AIProcessingHub() {
         wireBottomRightRef.current,
       ];
 
-      [...energyPaths, ...wirePaths, ...mobileWireRefs.current].forEach((el) => {
+      [...sweepPaths, ...wirePaths, ...mobileWireRefs.current].forEach((el) => {
         if (!el) return;
         const len = el.getTotalLength();
         gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
@@ -243,12 +262,14 @@ export default function AIProcessingHub() {
 
       gsap.set(coreGlowRef.current, { opacity: 0, scale: 0.6, transformOrigin: "50% 50%" });
       gsap.set(beamRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
-      gsap.set(wideGlowRef.current, { opacity: 0.1 });
+      gsap.set(wideGlowRef.current, { opacity: 0.04 });
       gsap.set(chipCoreRef.current, { opacity: 0.6, filter: "saturate(0.55) brightness(0.85)" });
       gsap.set(chipAuraRef.current, { opacity: 0.15, scale: 0.85, transformOrigin: "50% 50%" });
       gsap.set(chipIconGlowRef.current, { opacity: 0.25 });
       gsap.set(headerWrapRef.current, { opacity: 0, y: 30 });
       gsap.set(orbitRef.current, { opacity: 0, y: 20 });
+      gsap.set(mobileHeaderWrapRef.current, { opacity: 0, y: 30 });
+      gsap.set(mobileOrbitRef.current, { opacity: 0, y: 20 });
 
       gsap.set(mobileBeamRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
       gsap.set(mobileChipCoreRef.current, { opacity: 0.6, filter: "saturate(0.55) brightness(0.85)" });
@@ -267,22 +288,23 @@ export default function AIProcessingHub() {
         },
       });
 
-      // PHASE 1 — 0.00 → 0.12 — section enters
-      tl.to(orbitRef.current, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0);
-      tl.to(headerWrapRef.current, { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.02);
-      tl.to(wideGlowRef.current, { opacity: 0.3, duration: 0.12, ease: "power1.out" }, 0);
+      // PHASE 1 — 0.00 → 0.12 — section enters, still essentially dark
+      tl.to([orbitRef.current, mobileOrbitRef.current], { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0);
+      tl.to([headerWrapRef.current, mobileHeaderWrapRef.current], { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.02);
 
-      // PHASE 2 — 0.12 → 0.48 — energy emerges from under the curve
-      if (leftEnergyRef.current) {
-        tl.to(leftEnergyRef.current, { strokeDashoffset: 0, duration: 0.36, ease: "power1.inOut" }, 0.12);
-      }
-      if (rightEnergyRef.current) {
-        tl.to(rightEnergyRef.current, { strokeDashoffset: 0, duration: 0.36, ease: "power1.inOut" }, 0.12);
-      }
-      tl.to(wideGlowRef.current, { opacity: 0.65, duration: 0.36, ease: "power1.inOut" }, 0.12);
+      // PHASE 2 — 0.12 → 0.48 — the light sweep travels from the outer
+      // edges of the curve down toward the center dip. All three stroke
+      // layers per side share one dashoffset tween, so the soft glow, mid
+      // glow and sharp core line travel together as a single pipeline.
+      const sweepDuration = 0.36;
+      [leftOuterGlowRef, leftMidGlowRef, leftEnergyRef, rightOuterGlowRef, rightMidGlowRef, rightEnergyRef].forEach((ref) => {
+        if (!ref.current) return;
+        tl.to(ref.current, { strokeDashoffset: 0, duration: sweepDuration, ease: "power1.inOut" }, 0.12);
+      });
 
-      // PHASE 3 — 0.48 → 0.60 — streams travel toward the center dip
-      tl.to(wideGlowRef.current, { opacity: 0.9, duration: 0.12, ease: "power1.inOut" }, 0.48);
+      // PHASE 3 — 0.48 → 0.68 — as the sweep converges, the broad ambient
+      // atmosphere fills in behind it
+      tl.to(wideGlowRef.current, { opacity: 0.55, duration: 0.2, ease: "power1.inOut" }, 0.48);
 
       // PHASE 4 — 0.60 → 0.68 — center collision bloom
       tl.to(coreGlowRef.current, { opacity: 1, scale: 1, duration: 0.08, ease: "power2.out" }, 0.6);
@@ -296,6 +318,7 @@ export default function AIProcessingHub() {
       tl.to(mobileChipCoreRef.current, { opacity: 1, filter: "saturate(1) brightness(1)", duration: 0.08, ease: "power2.out" }, 0.82);
       tl.to(chipAuraRef.current, { opacity: 1, scale: 1, duration: 0.08, ease: "power2.out" }, 0.82);
       tl.to(chipIconGlowRef.current, { opacity: 1, duration: 0.08, ease: "power2.out" }, 0.82);
+      tl.to(wideGlowRef.current, { opacity: 0.75, duration: 0.08, ease: "power2.out" }, 0.82);
 
       // PHASE 7 — 0.90 → 1.00 — circuit wires draw, cards illuminate
       const wireStarts = [0.9, 0.91, 0.9, 0.91];
@@ -347,26 +370,63 @@ export default function AIProcessingHub() {
             ))}
           </div>
 
-          {/* ── SYSTEM A: soft photographic glow, built from CSS radial
-              gradients + CSS blur (predictable, unlike large filled SVG
-              shapes pushed through feGaussianBlur, which tends to clip
-              into hard flat edges instead of a soft falloff). ── */}
-
-          {/* Wide ambient magenta atmosphere under the curve (Phase 1-3) */}
+          {/* ── SYSTEM A: the pipeline sweep. Three stacked strokes per side
+              (soft outer glow, mid glow, sharp core line) share one curve
+              path and one stroke-dashoffset reveal, so the glow visibly
+              travels from the outer edge to the center dip — matching the
+              left/right-in, meet-at-center motion from the reference. The
+              outer/mid layers use a plain CSS `filter: blur()` applied
+              directly to the SVG path (predictable, screen-space blur) —
+              not SVG-native feGaussianBlur, which clips into hard edges on
+              large shapes. Broad ambient fill + collision bloom + beam are
+              separate CSS-gradient layers behind/above it. ── */}
           <div
             ref={wideGlowRef}
-            className="absolute pointer-events-none z-[6]"
+            className="absolute pointer-events-none z-[5]"
             style={{
               left: "50%",
-              top: "62%",
-              width: "160%",
-              height: "58%",
-              transform: "translate(-50%, -48%)",
+              top: "64%",
+              width: "150%",
+              height: "50%",
+              transform: "translate(-50%, -46%)",
               background:
-                "radial-gradient(ellipse 55% 60% at 50% 40%, rgba(219,39,119,0.55) 0%, rgba(219,39,119,0.32) 30%, rgba(219,39,119,0.14) 52%, rgba(219,39,119,0.04) 70%, transparent 82%)",
-              filter: "blur(4.5vw)",
+                "radial-gradient(ellipse 55% 60% at 50% 45%, rgba(219,39,119,0.5) 0%, rgba(219,39,119,0.28) 32%, rgba(219,39,119,0.1) 55%, transparent 78%)",
+              filter: "blur(4vw)",
             }}
           />
+
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-[6]"
+            viewBox="0 0 939 933"
+            preserveAspectRatio="none"
+            fill="none"
+          >
+            {/* Outer soft glow — widest, dimmest, most blurred */}
+            <path ref={leftOuterGlowRef} d="M 0 397 C 300 600, 420 610, 469 600" stroke="rgba(219,39,119,0.5)" strokeWidth="130" strokeLinecap="round" style={{ filter: "blur(2.6vw)" }} />
+            <path ref={rightOuterGlowRef} d="M 939 397 C 639 600, 519 610, 470 600" stroke="rgba(219,39,119,0.5)" strokeWidth="130" strokeLinecap="round" style={{ filter: "blur(2.6vw)" }} />
+
+            {/* Mid glow — tighter, brighter pink */}
+            <path ref={leftMidGlowRef} d="M 0 397 C 300 600, 420 610, 469 600" stroke="rgba(244,114,182,0.75)" strokeWidth="34" strokeLinecap="round" style={{ filter: "blur(1vw)" }} />
+            <path ref={rightMidGlowRef} d="M 939 397 C 639 600, 519 610, 470 600" stroke="rgba(244,114,182,0.75)" strokeWidth="34" strokeLinecap="round" style={{ filter: "blur(1vw)" }} />
+
+            {/* Sharp core line — the crisp white edge the eye tracks */}
+            <path
+              ref={leftEnergyRef}
+              d="M 0 397 C 300 600, 420 610, 469 600"
+              stroke="#ffffff"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
+            />
+            <path
+              ref={rightEnergyRef}
+              d="M 939 397 C 639 600, 519 610, 470 600"
+              stroke="#ffffff"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
+            />
+          </svg>
 
           {/* Bright core bloom at the center dip / collision point (Phase 4) */}
           <div
@@ -400,10 +460,8 @@ export default function AIProcessingHub() {
             }}
           />
 
-          {/* Thin luminous rim tracing the horizon + energy streams (Phase 2-3),
-              and the chip → card circuit wires (Phase 7) — crisp SVG lines,
-              glowed with a pixel-based CSS drop-shadow (not object-bounding-
-              box relative, so it never clips or flattens unpredictably). */}
+          {/* SYSTEM B — chip → card circuit wires (Phase 7), a separate SVG
+              so it always sits above the chip/card layer stacking below */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none z-10"
             viewBox="0 0 939 933"
@@ -417,35 +475,6 @@ export default function AIProcessingHub() {
                 <stop offset="100%" stopColor="#f9a8d4" stopOpacity="0.85" />
               </linearGradient>
             </defs>
-
-            {/* Faint horizon rim, always visible, for the "edge of light" line */}
-            <path
-              d="M 0 397 C 300 620, 639 620, 939 397"
-              stroke="rgba(255,255,255,0.35)"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.5))" }}
-            />
-
-            {/* SYSTEM A — energy streams from under the curve to the center dip */}
-            <path
-              ref={leftEnergyRef}
-              d="M 0 397 C 300 600, 420 610, 469 600"
-              stroke="#ffffff"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
-            />
-            <path
-              ref={rightEnergyRef}
-              d="M 939 397 C 639 600, 519 610, 470 600"
-              stroke="#ffffff"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
-            />
-
-            {/* SYSTEM B — chip → card circuit wires (Phase 7) */}
             <path ref={wireTopLeftRef} d="M 385 788 C 300 788, 260 742, 215 742" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
             <path ref={wireBottomLeftRef} d="M 385 842 C 300 842, 260 887, 215 887" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
             <path ref={wireTopRightRef} d="M 555 788 C 640 788, 680 742, 730 742" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
@@ -565,16 +594,16 @@ export default function AIProcessingHub() {
 
           {/* Metric cards, positioned to match reference exactly */}
           <div className="absolute z-20" style={{ left: "4.79%", top: "76.63%", width: "18.1%" }}>
-            <MetricCard metric={metrics[0]} cardRef={(el) => (cardRefs.current[0] = el)} />
+            <MetricCard metric={metrics[0]} cardRef={(el) => { cardRefs.current[0] = el; }} />
           </div>
           <div className="absolute z-20" style={{ left: "4.79%", top: "92.18%", width: "18.1%" }}>
-            <MetricCard metric={metrics[1]} cardRef={(el) => (cardRefs.current[1] = el)} />
+            <MetricCard metric={metrics[1]} cardRef={(el) => { cardRefs.current[1] = el; }} />
           </div>
           <div className="absolute z-20" style={{ left: "77.74%", top: "76.63%", width: "18.1%" }}>
-            <MetricCard metric={metrics[2]} cardRef={(el) => (cardRefs.current[2] = el)} />
+            <MetricCard metric={metrics[2]} cardRef={(el) => { cardRefs.current[2] = el; }} />
           </div>
           <div className="absolute z-20" style={{ left: "77.74%", top: "92.18%", width: "18.1%" }}>
-            <MetricCard metric={metrics[3]} cardRef={(el) => (cardRefs.current[3] = el)} />
+            <MetricCard metric={metrics[3]} cardRef={(el) => { cardRefs.current[3] = el; }} />
           </div>
         </div>
 
@@ -583,7 +612,7 @@ export default function AIProcessingHub() {
             (curve glow, chip, wires, cards) with lighter geometry/blur.
         ══════════════════════════════════════════════════════════════ */}
         <div className="sm:hidden flex flex-col items-center px-4 pt-10">
-          <div ref={orbitRef} className="flex items-center justify-center gap-1.5 mb-8 flex-wrap max-w-full">
+          <div ref={mobileOrbitRef} className="flex items-center justify-center gap-1.5 mb-8 flex-wrap max-w-full">
             {[...leftTokens.slice(-3), ...rightTokens.slice(0, 3)].map((tk) => (
               <div key={tk.symbol} className="w-8 h-8 rounded-full border border-white/12 flex items-center justify-center overflow-hidden" style={{ backgroundColor: tk.bgColor, boxShadow: `0 0 14px ${tk.glow}45` }}>
                 <span style={{ color: tk.textColor, fontSize: "12px" }} className="flex items-center justify-center w-full h-full">{tk.icon}</span>
@@ -591,7 +620,7 @@ export default function AIProcessingHub() {
             ))}
           </div>
 
-          <div ref={headerWrapRef} className="flex flex-col items-center text-center">
+          <div ref={mobileHeaderWrapRef} className="flex flex-col items-center text-center">
             <h2 className="text-white leading-[1.15] text-[28px]" style={{ fontFamily: "var(--font-outfit, sans-serif)", fontWeight: 300, letterSpacing: "-0.02em" }}>
               10K+ Crypto Assets <br />
               <span style={{ fontWeight: 400 }}>Available To Trade</span>
@@ -622,10 +651,10 @@ export default function AIProcessingHub() {
                   <stop offset="100%" stopColor="#f9a8d4" stopOpacity="0.85" />
                 </linearGradient>
               </defs>
-              <path ref={(el) => (mobileWireRefs.current[0] = el)} d="M 130 70 C 90 70, 60 40, 20 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => (mobileWireRefs.current[1] = el)} d="M 130 110 C 90 110, 60 150, 20 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => (mobileWireRefs.current[2] = el)} d="M 190 70 C 230 70, 260 40, 300 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => (mobileWireRefs.current[3] = el)} d="M 190 110 C 230 110, 260 150, 300 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
+              <path ref={(el) => { mobileWireRefs.current[0] = el; }} d="M 130 70 C 90 70, 60 40, 20 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
+              <path ref={(el) => { mobileWireRefs.current[1] = el; }} d="M 130 110 C 90 110, 60 150, 20 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
+              <path ref={(el) => { mobileWireRefs.current[2] = el; }} d="M 190 70 C 230 70, 260 40, 300 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
+              <path ref={(el) => { mobileWireRefs.current[3] = el; }} d="M 190 110 C 230 110, 260 150, 300 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
             <div className="relative z-10 w-[112px] aspect-square rounded-[20px] bg-[#090b10] border-2 border-white/20 p-3 flex items-center justify-center shadow-[0_0_40px_rgba(219,39,119,0.55)]">
               <div ref={mobileChipCoreRef} className="w-full h-full rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ff4365 0%, #db2777 50%, #9333ea 100%)" }}>
@@ -639,7 +668,7 @@ export default function AIProcessingHub() {
             {metrics.map((m, i) => (
               <div
                 key={m.label}
-                ref={(el) => (mobileCardRefs.current[i] = el)}
+                ref={(el) => { mobileCardRefs.current[i] = el; }}
                 className="bg-[#0e1017]/95 border border-white/10 rounded-xl p-3 flex items-center gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.85)]"
               >
                 <div className="w-8 h-8 shrink-0 rounded-lg bg-[#161a26] border border-white/10 flex items-center justify-center">
