@@ -10,13 +10,7 @@ if (typeof window !== "undefined") {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// All positions below are derived directly from the reference screenshot
-// (939 × 933 reference frame). The composition is built as ONE aspect-ratio
-// locked box; every element is positioned as a percentage of that box, so
-// the end-of-scroll state always reproduces the reference 1:1 regardless of
-// viewport width, and the curve / energy / wires (drawn in a single SVG
-// sharing the same 939×933 coordinate space) line up exactly with the HTML
-// chip and card elements.
+// TOKEN DATA & METRICS
 // ══════════════════════════════════════════════════════════════════════════
 
 interface Token {
@@ -73,11 +67,7 @@ const leftTokens: Token[] = [
     textColor: "#fff",
     size: "lg",
     glow: "#FFA409",
-    icon: (
-      <div className="w-[80%] h-[80%] rounded-full bg-[#fbbf24] flex items-center justify-center text-2xl shadow-inner">
-        🐕
-      </div>
-    ),
+    icon: <span className="text-xl">🐕</span>,
   },
   {
     symbol: "LINK",
@@ -87,7 +77,7 @@ const leftTokens: Token[] = [
     glow: "#375BD2",
     icon: (
       <svg viewBox="0 0 32 32" fill="#ffffff" className="w-[55%] h-[55%]">
-        <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
+        <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
       </svg>
     ),
   },
@@ -108,11 +98,7 @@ const rightTokens: Token[] = [
     textColor: "#facc15",
     size: "lg",
     glow: "#FFD700",
-    icon: (
-      <div className="w-[80%] h-[80%] rounded-full bg-[#0a0f1d] border border-white/10 flex items-center justify-center text-2xl">
-        🌙
-      </div>
-    ),
+    icon: <span className="text-xl">🌙</span>,
   },
   {
     symbol: "BNB",
@@ -134,10 +120,7 @@ const rightTokens: Token[] = [
     glow: "#9945FF",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-[45%] h-[45%]">
-        <path
-          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
-          fill="#c084fc"
-        />
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="#c084fc" />
       </svg>
     ),
   },
@@ -152,537 +135,832 @@ const rightTokens: Token[] = [
 ];
 
 const metrics: Metric[] = [
-  { icon: <Globe className="w-[45%] h-[45%] text-pink-400" />, value: "50+", label: "Countries" },
-  { icon: <Database className="w-[45%] h-[45%] text-pink-400" />, value: "10K+", label: "Crypto Assets" },
-  { icon: <Check className="w-[45%] h-[45%] text-pink-400 stroke-[2.5]" />, value: "97,5%", label: "Success Rate" },
-  { icon: <Users className="w-[45%] h-[45%] text-pink-400" />, value: "10,000+", label: "Daily Traders" },
+  { icon: <Globe className="w-5 h-5 text-white" />, value: "50+", label: "Countries" },
+  { icon: <Database className="w-5 h-5 text-white" />, value: "10K+", label: "Crypto Assets" },
+  { icon: <Check className="w-5 h-5 text-white stroke-[2.5]" />, value: "97,5%", label: "Success Rate" },
+  { icon: <Users className="w-5 h-5 text-white" />, value: "10,000+", label: "Daily Traders" },
 ];
 
 const dimFor = (s: "sm" | "md" | "lg") =>
-  s === "sm" ? "w-[9%]" : s === "lg" ? "w-[13%]" : "w-[10.5%]";
-
-function MetricCard({
-  metric,
-  cardRef,
-}: {
-  metric: Metric;
-  cardRef: (el: HTMLDivElement | null) => void;
-}) {
-  return (
-    <div
-      ref={cardRef}
-      className="absolute bg-[#0e1017]/95 border border-white/10 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] flex items-center gap-[10%] px-[8%] py-[10%]"
-    >
-      <div className="shrink-0 aspect-square w-[34%] rounded-xl bg-[#161a26] border border-white/10 flex items-center justify-center">
-        {metric.icon}
-      </div>
-      <div>
-        <div
-          className="font-bold text-white tracking-tight leading-tight"
-          style={{ fontFamily: "var(--font-outfit, sans-serif)", fontSize: "clamp(14px, 1.7vw, 24px)" }}
-        >
-          {metric.value}
-        </div>
-        <div className="text-[#9ca3af] font-medium tracking-wide leading-tight" style={{ fontSize: "clamp(9px, 0.85vw, 12px)" }}>
-          {metric.label}
-        </div>
-      </div>
-    </div>
-  );
-}
+  s === "sm" ? "w-9 h-9 sm:w-11 sm:h-11" : s === "lg" ? "w-13 h-13 sm:w-16 sm:h-16" : "w-11 h-11 sm:w-13 sm:h-13";
 
 export default function AIProcessingHub() {
-  const hubRef = useRef<HTMLDivElement>(null);
-  const headerWrapRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
+  const headerWrapRef = useRef<HTMLDivElement>(null);
 
-  // CSS-based glow layers (predictable soft blur, unlike large filled SVG
-  // shapes run through feGaussianBlur, which clip/flatten unpredictably).
-  const wideGlowRef = useRef<HTMLDivElement>(null);
-  const coreGlowRef = useRef<HTMLDivElement>(null);
-  const beamRef = useRef<HTMLDivElement>(null);
+  // Background purple atmospheric horizon underglow
+  const auroraUnderglowRef = useRef<HTMLDivElement>(null);
+  const centerBloomRef = useRef<HTMLDivElement>(null);
+  const centerVFillRef = useRef<SVGPolygonElement>(null);
 
-  // The "pipeline" sweep: three stacked strokes per side (soft outer glow,
-  // mid glow, sharp core line) sharing the same curve path and the same
-  // stroke-dashoffset reveal, so they travel together from the outer edge
-  // toward the center dip — reproducing the left/right-in, meet-at-center
-  // motion from the reference footage, instead of a flat opacity crossfade.
-  const leftOuterGlowRef = useRef<SVGPathElement>(null);
-  const leftMidGlowRef = useRef<SVGPathElement>(null);
-  const leftEnergyRef = useRef<SVGPathElement>(null);
-  const rightOuterGlowRef = useRef<SVGPathElement>(null);
-  const rightMidGlowRef = useRef<SVGPathElement>(null);
-  const rightEnergyRef = useRef<SVGPathElement>(null);
+  // Full-width angled V-funnel horizon laser paths (Left & Right)
+  const leftCurveGlowRef = useRef<SVGPathElement>(null);
+  const leftCurveMidRef = useRef<SVGPathElement>(null);
+  const leftCurveLaserRef = useRef<SVGPathElement>(null);
 
+  const rightCurveGlowRef = useRef<SVGPathElement>(null);
+  const rightCurveMidRef = useRef<SVGPathElement>(null);
+  const rightCurveLaserRef = useRef<SVGPathElement>(null);
+
+  // Vertical light stream / beam pouring from V-vertex into chip
+  const verticalBeamDivRef = useRef<HTMLDivElement>(null);
+  const verticalBeamLaserRef = useRef<SVGPathElement>(null);
+  const verticalBeamGlowRef = useRef<SVGPathElement>(null);
+
+  // Circuit wires from Chip -> 4 Metric Cards
+  const wireTLRef = useRef<SVGPathElement>(null);
+  const wireBLRef = useRef<SVGPathElement>(null);
+  const wireTRRef = useRef<SVGPathElement>(null);
+  const wireBRRef = useRef<SVGPathElement>(null);
+
+  // Central Chip elements
+  const chipContainerRef = useRef<HTMLDivElement>(null);
   const chipAuraRef = useRef<HTMLDivElement>(null);
   const chipCoreRef = useRef<HTMLDivElement>(null);
   const chipIconGlowRef = useRef<HTMLDivElement>(null);
 
-  const wireTopLeftRef = useRef<SVGPathElement>(null);
-  const wireBottomLeftRef = useRef<SVGPathElement>(null);
-  const wireTopRightRef = useRef<SVGPathElement>(null);
-  const wireBottomRightRef = useRef<SVGPathElement>(null);
-
+  // Metric Cards
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const mobileOrbitRef = useRef<HTMLDivElement>(null);
-  const mobileHeaderWrapRef = useRef<HTMLDivElement>(null);
-  const mobileCardRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  // Mobile elements
+  const mobileSweepLeftRef = useRef<SVGPathElement>(null);
+  const mobileSweepRightRef = useRef<SVGPathElement>(null);
   const mobileWireRefs = useRef<Array<SVGPathElement | null>>([]);
   const mobileChipCoreRef = useRef<HTMLDivElement>(null);
-  const mobileBeamRef = useRef<HTMLDivElement>(null);
+  const mobileCardRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   // ══════════════════════════════════════════════════════════════════════
-  // MASTER SCROLL PROGRESS — one GSAP timeline (0 → 1), scrubbed against
-  // the hub's transit through the viewport. No pinning; natural page flow.
+  // GSAP 5-STAGE CINEMATIC TIMELINE WITH ANGLED V-CONVERGENCE
   // ══════════════════════════════════════════════════════════════════════
   useEffect(() => {
-    if (!hubRef.current) return;
+    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const sweepPaths = [
-        leftOuterGlowRef.current,
-        leftMidGlowRef.current,
-        leftEnergyRef.current,
-        rightOuterGlowRef.current,
-        rightMidGlowRef.current,
-        rightEnergyRef.current,
-      ];
-      const wirePaths = [
-        wireTopLeftRef.current,
-        wireBottomLeftRef.current,
-        wireTopRightRef.current,
-        wireBottomRightRef.current,
+      // 1. Prepare SVG stroke lengths
+      const animatedSvgElements = [
+        leftCurveGlowRef.current,
+        leftCurveMidRef.current,
+        leftCurveLaserRef.current,
+        rightCurveGlowRef.current,
+        rightCurveMidRef.current,
+        rightCurveLaserRef.current,
+        verticalBeamLaserRef.current,
+        verticalBeamGlowRef.current,
+        wireTLRef.current,
+        wireBLRef.current,
+        wireTRRef.current,
+        wireBRRef.current,
+        mobileSweepLeftRef.current,
+        mobileSweepRightRef.current,
+        ...mobileWireRefs.current,
       ];
 
-      [...sweepPaths, ...wirePaths, ...mobileWireRefs.current].forEach((el) => {
+      animatedSvgElements.forEach((el) => {
         if (!el) return;
         const len = el.getTotalLength();
         gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
       });
 
-      gsap.set(coreGlowRef.current, { opacity: 0, scale: 0.6, transformOrigin: "50% 50%" });
-      gsap.set(beamRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
-      gsap.set(wideGlowRef.current, { opacity: 0.04 });
-      gsap.set(chipCoreRef.current, { opacity: 0.6, filter: "saturate(0.55) brightness(0.85)" });
-      gsap.set(chipAuraRef.current, { opacity: 0.15, scale: 0.85, transformOrigin: "50% 50%" });
-      gsap.set(chipIconGlowRef.current, { opacity: 0.25 });
-      gsap.set(headerWrapRef.current, { opacity: 0, y: 30 });
-      gsap.set(orbitRef.current, { opacity: 0, y: 20 });
-      gsap.set(mobileHeaderWrapRef.current, { opacity: 0, y: 30 });
-      gsap.set(mobileOrbitRef.current, { opacity: 0, y: 20 });
+      // 2. Initial dormant states
+      gsap.set(orbitRef.current, { opacity: 0, y: 30, scale: 0.96 });
+      gsap.set(headerWrapRef.current, { opacity: 0, y: 35 });
+      gsap.set(auroraUnderglowRef.current, { opacity: 0, scaleY: 0.7 });
+      gsap.set(centerBloomRef.current, { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" });
+      gsap.set(centerVFillRef.current, { opacity: 0 });
+      gsap.set(verticalBeamDivRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
 
-      gsap.set(mobileBeamRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
-      gsap.set(mobileChipCoreRef.current, { opacity: 0.6, filter: "saturate(0.55) brightness(0.85)" });
+      // Chip initial dormant state
+      gsap.set(chipAuraRef.current, { opacity: 0, scale: 0.7, transformOrigin: "50% 50%" });
+      gsap.set(chipCoreRef.current, { opacity: 0.35, filter: "saturate(0.3) brightness(0.7)" });
+      gsap.set(chipIconGlowRef.current, { opacity: 0.1 });
+      gsap.set(mobileChipCoreRef.current, { opacity: 0.35, filter: "saturate(0.3) brightness(0.7)" });
 
+      // Cards initial hidden state
       [...cardRefs.current, ...mobileCardRefs.current].forEach((card) => {
         if (!card) return;
-        gsap.set(card, { opacity: 0.55, y: 10 });
+        gsap.set(card, { opacity: 0.25, y: 18, filter: "grayscale(0.8) brightness(0.7)" });
       });
 
-      const tl = gsap.timeline({
+      // 3. ScrollTrigger timeline scrub
+      const masterTL = gsap.timeline({
         scrollTrigger: {
-          trigger: hubRef.current,
-          start: "top 90%",
-          end: "bottom 30%",
-          scrub: 1,
+          trigger: containerRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          scrub: 1.1,
         },
       });
 
-      // PHASE 1 — 0.00 → 0.12 — section enters, still essentially dark
-      tl.to([orbitRef.current, mobileOrbitRef.current], { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0);
-      tl.to([headerWrapRef.current, mobileHeaderWrapRef.current], { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.02);
+      // ── STAGE 1: Top Tokens & Header Fade In (0.00 -> 0.18) ──
+      masterTL.to(orbitRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, 0);
+      masterTL.to(headerWrapRef.current, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, 0.04);
+      masterTL.to(auroraUnderglowRef.current, { opacity: 0.45, scaleY: 0.9, duration: 0.2, ease: "power1.out" }, 0.08);
 
-      // PHASE 2 — 0.12 → 0.48 — the light sweep travels from the outer
-      // edges of the curve down toward the center dip. All three stroke
-      // layers per side share one dashoffset tween, so the soft glow, mid
-      // glow and sharp core line travel together as a single pipeline.
-      const sweepDuration = 0.36;
-      [leftOuterGlowRef, leftMidGlowRef, leftEnergyRef, rightOuterGlowRef, rightMidGlowRef, rightEnergyRef].forEach((ref) => {
-        if (!ref.current) return;
-        tl.to(ref.current, { strokeDashoffset: 0, duration: sweepDuration, ease: "power1.inOut" }, 0.12);
+      // ── STAGE 2: Angled Horizon Curves Draw Inward and Dip at Center (0.10 -> 0.50) ──
+      const leftCurve = [leftCurveGlowRef.current, leftCurveMidRef.current, leftCurveLaserRef.current];
+      const rightCurve = [rightCurveGlowRef.current, rightCurveMidRef.current, rightCurveLaserRef.current];
+
+      leftCurve.forEach((path) => {
+        if (path) masterTL.to(path, { strokeDashoffset: 0, duration: 0.4, ease: "power1.inOut" }, 0.1);
+      });
+      rightCurve.forEach((path) => {
+        if (path) masterTL.to(path, { strokeDashoffset: 0, duration: 0.4, ease: "power1.inOut" }, 0.1);
       });
 
-      // PHASE 3 — 0.48 → 0.68 — as the sweep converges, the broad ambient
-      // atmosphere fills in behind it
-      tl.to(wideGlowRef.current, { opacity: 0.55, duration: 0.2, ease: "power1.inOut" }, 0.48);
-
-      // PHASE 4 — 0.60 → 0.68 — center collision bloom
-      tl.to(coreGlowRef.current, { opacity: 1, scale: 1, duration: 0.08, ease: "power2.out" }, 0.6);
-
-      // PHASE 5 — 0.68 → 0.82 — downward light waterfall into the chip
-      tl.to(beamRef.current, { opacity: 0.95, scaleY: 1, duration: 0.14, ease: "power2.out" }, 0.68);
-      tl.to(mobileBeamRef.current, { opacity: 0.95, scaleY: 1, duration: 0.14, ease: "power2.out" }, 0.68);
-
-      // PHASE 6 — 0.82 → 0.90 — chip activation
-      tl.to(chipCoreRef.current, { opacity: 1, filter: "saturate(1) brightness(1)", duration: 0.08, ease: "power2.out" }, 0.82);
-      tl.to(mobileChipCoreRef.current, { opacity: 1, filter: "saturate(1) brightness(1)", duration: 0.08, ease: "power2.out" }, 0.82);
-      tl.to(chipAuraRef.current, { opacity: 1, scale: 1, duration: 0.08, ease: "power2.out" }, 0.82);
-      tl.to(chipIconGlowRef.current, { opacity: 1, duration: 0.08, ease: "power2.out" }, 0.82);
-      tl.to(wideGlowRef.current, { opacity: 0.75, duration: 0.08, ease: "power2.out" }, 0.82);
-
-      // PHASE 7 — 0.90 → 1.00 — circuit wires draw, cards illuminate
-      const wireStarts = [0.9, 0.91, 0.9, 0.91];
-      wirePaths.forEach((el, i) => {
-        if (!el) return;
-        tl.to(el, { strokeDashoffset: 0, duration: 0.08, ease: "power1.inOut" }, wireStarts[i]);
+      // Mobile curve
+      [mobileSweepLeftRef.current, mobileSweepRightRef.current].forEach((path) => {
+        if (path) masterTL.to(path, { strokeDashoffset: 0, duration: 0.4, ease: "power1.inOut" }, 0.1);
       });
-      mobileWireRefs.current.forEach((el, i) => {
-        if (!el) return;
-        tl.to(el, { strokeDashoffset: 0, duration: 0.08, ease: "power1.inOut" }, wireStarts[i % wireStarts.length]);
+
+      // Aurora underglow deepens to full purple intensity as curve converges
+      masterTL.to(auroraUnderglowRef.current, { opacity: 1, scaleY: 1, duration: 0.3, ease: "power1.inOut" }, 0.22);
+
+      // ── STAGE 3: Collision at Angled V-Dip & Downward Light Waterfall (0.44 -> 0.68) ──
+      // Brilliant V-trough fill and collision bloom at the angled V-vertex (960, 330)
+      masterTL.to(centerVFillRef.current, { opacity: 1, duration: 0.12, ease: "power2.out" }, 0.44);
+      masterTL.to(centerBloomRef.current, { opacity: 1, scale: 1.25, duration: 0.12, ease: "power2.out" }, 0.45);
+
+      // Downward light stream pouring into the chip
+      masterTL.to(verticalBeamDivRef.current, { opacity: 1, scaleY: 1, duration: 0.18, ease: "power2.inOut" }, 0.48);
+      [verticalBeamGlowRef.current, verticalBeamLaserRef.current].forEach((path) => {
+        if (path) masterTL.to(path, { strokeDashoffset: 0, duration: 0.18, ease: "power2.in" }, 0.48);
       });
-      [...cardRefs.current, ...mobileCardRefs.current].forEach((card, i) => {
-        if (!card) return;
-        tl.to(card, { opacity: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.94 + (i % 4) * 0.005);
+
+      // ── STAGE 4: CPU Chip Power Up & Ignition (0.62 -> 0.78) ──
+      masterTL.to(chipCoreRef.current, {
+        opacity: 1,
+        filter: "saturate(1.25) brightness(1.25)",
+        duration: 0.14,
+        ease: "power3.out",
+      }, 0.62);
+
+      masterTL.to(mobileChipCoreRef.current, {
+        opacity: 1,
+        filter: "saturate(1.25) brightness(1.25)",
+        duration: 0.14,
+        ease: "power3.out",
+      }, 0.62);
+
+      masterTL.to(chipAuraRef.current, {
+        opacity: 1,
+        scale: 1.3,
+        duration: 0.16,
+        ease: "power3.out",
+      }, 0.62);
+
+      masterTL.to(chipIconGlowRef.current, {
+        opacity: 1,
+        duration: 0.12,
+        ease: "power2.out",
+      }, 0.64);
+
+      // ── STAGE 5: 4 Circuit Wires Shoot Out & 4 Cards Illuminate (0.74 -> 1.00) ──
+      const circuitWires = [wireTLRef.current, wireBLRef.current, wireTRRef.current, wireBRRef.current];
+      circuitWires.forEach((wire, idx) => {
+        if (wire) masterTL.to(wire, { strokeDashoffset: 0, duration: 0.18, ease: "power2.out" }, 0.74 + idx * 0.02);
       });
-    }, hubRef);
+
+      mobileWireRefs.current.forEach((wire, idx) => {
+        if (wire) masterTL.to(wire, { strokeDashoffset: 0, duration: 0.18, ease: "power2.out" }, 0.74 + idx * 0.02);
+      });
+
+      cardRefs.current.forEach((card, idx) => {
+        if (card) {
+          masterTL.to(card, {
+            opacity: 1,
+            y: 0,
+            filter: "grayscale(0) brightness(1)",
+            duration: 0.18,
+            ease: "power2.out",
+          }, 0.78 + idx * 0.03);
+        }
+      });
+
+      mobileCardRefs.current.forEach((card, idx) => {
+        if (card) {
+          masterTL.to(card, {
+            opacity: 1,
+            y: 0,
+            filter: "grayscale(0) brightness(1)",
+            duration: 0.18,
+            ease: "power2.out",
+          }, 0.78 + idx * 0.03);
+        }
+      });
+    }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div className="relative w-full bg-black text-white">
-      {/* Ambient stars */}
+    <section ref={containerRef} className="relative w-full bg-[#000000] text-white overflow-hidden select-none pt-12 pb-20 lg:pt-20 lg:pb-32">
+      {/* ── BACKGROUND VERTICAL MATRIX LINES (MATCHING REFERENCE) ── */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Subtle vertical grid matrix lines */}
+        <div className="absolute inset-0 flex justify-around opacity-[0.06] px-12">
+          {[...Array(14)].map((_, i) => (
+            <div key={i} className="h-full w-px bg-gradient-to-b from-transparent via-purple-300 to-transparent" />
+          ))}
+        </div>
+
+        {/* Ambient star points */}
         {[
-          { t: "4%", l: "6%", r: 1.5, o: 0.7 },
-          { t: "2%", l: "22%", r: 1, o: 0.5 },
-          { t: "8%", l: "36%", r: 1.5, o: 0.4 },
-          { t: "3%", l: "68%", r: 1.5, o: 0.6 },
-          { t: "6%", l: "82%", r: 1, o: 0.5 },
-          { t: "12%", l: "94%", r: 1.5, o: 0.7 },
-          { t: "28%", l: "8%", r: 1, o: 0.4 },
-          { t: "34%", l: "92%", r: 1.5, o: 0.5 },
+          { t: "8%", l: "12%", r: 2, o: 0.6 },
+          { t: "12%", l: "28%", r: 1.5, o: 0.4 },
+          { t: "9%", l: "74%", r: 2, o: 0.7 },
+          { t: "16%", l: "88%", r: 1.5, o: 0.5 },
+          { t: "32%", l: "6%", r: 1.5, o: 0.3 },
+          { t: "36%", l: "94%", r: 2, o: 0.6 },
+          { t: "68%", l: "15%", r: 1.5, o: 0.4 },
+          { t: "72%", l: "85%", r: 2, o: 0.5 },
         ].map((s, i) => (
-          <div key={i} className="absolute rounded-full bg-white" style={{ top: s.t, left: s.l, width: s.r, height: s.r, opacity: s.o }} />
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-pulse"
+            style={{
+              top: s.t,
+              left: s.l,
+              width: s.r,
+              height: s.r,
+              opacity: s.o,
+              animationDuration: `${2.8 + (i % 3)}s`,
+            }}
+          />
         ))}
       </div>
 
-      <div ref={hubRef} className="relative z-10 w-full">
-        {/* ══════════════════════════════════════════════════════════════
-            DESKTOP / TABLET — precise aspect-locked recreation of the
-            reference composition (939 × 933 coordinate space).
-        ══════════════════════════════════════════════════════════════ */}
-        <div className="relative w-full max-w-[1400px] mx-auto hidden sm:block" style={{ aspectRatio: "939 / 933" }}>
-          {/* Vertical matrix lines, behind everything */}
-          <div className="absolute inset-x-0 top-[42%] bottom-0 pointer-events-none flex justify-center gap-[8%] opacity-20 z-0">
-            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-full w-px bg-gradient-to-b from-pink-500/30 via-white/10 to-transparent" />
+      {/* ── TOP SECTION: TOKEN ORBIT & HEADLINE ── */}
+      <div className="relative z-20 max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col items-center">
+        {/* Token Orbit Row */}
+        <div
+          ref={orbitRef}
+          className="w-full flex items-center justify-center gap-2 sm:gap-4 md:gap-6 mb-8 md:mb-12"
+        >
+          {/* Left Token Cluster */}
+          <div className="hidden sm:flex items-center gap-2 md:gap-3.5 flex-1 justify-end">
+            {leftTokens.map((tk) => (
+              <div
+                key={tk.symbol}
+                className={`${dimFor(tk.size)} shrink-0 rounded-full border border-white/15 flex items-center justify-center transition-all duration-300 hover:scale-115 hover:border-pink-400`}
+                style={{
+                  backgroundColor: tk.bgColor,
+                  boxShadow: `0 0 24px ${tk.glow}35, inset 0 0 10px rgba(255,255,255,0.15)`,
+                }}
+              >
+                <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">
+                  {tk.icon}
+                </span>
+              </div>
             ))}
           </div>
 
-          {/* ── SYSTEM A: the pipeline sweep. Three stacked strokes per side
-              (soft outer glow, mid glow, sharp core line) share one curve
-              path and one stroke-dashoffset reveal, so the glow visibly
-              travels from the outer edge to the center dip — matching the
-              left/right-in, meet-at-center motion from the reference. The
-              outer/mid layers use a plain CSS `filter: blur()` applied
-              directly to the SVG path (predictable, screen-space blur) —
-              not SVG-native feGaussianBlur, which clips into hard edges on
-              large shapes. Broad ambient fill + collision bloom + beam are
-              separate CSS-gradient layers behind/above it. ── */}
-          <div
-            ref={wideGlowRef}
-            className="absolute pointer-events-none z-[5]"
-            style={{
-              left: "50%",
-              top: "64%",
-              width: "150%",
-              height: "50%",
-              transform: "translate(-50%, -46%)",
-              background:
-                "radial-gradient(ellipse 55% 60% at 50% 45%, rgba(219,39,119,0.5) 0%, rgba(219,39,119,0.28) 32%, rgba(219,39,119,0.1) 55%, transparent 78%)",
-              filter: "blur(4vw)",
-            }}
-          />
-
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none z-[6]"
-            viewBox="0 0 939 933"
-            preserveAspectRatio="none"
-            fill="none"
-          >
-            {/* Outer soft glow — widest, dimmest, most blurred */}
-            <path ref={leftOuterGlowRef} d="M 0 397 C 300 600, 420 610, 469 600" stroke="rgba(219,39,119,0.5)" strokeWidth="130" strokeLinecap="round" style={{ filter: "blur(2.6vw)" }} />
-            <path ref={rightOuterGlowRef} d="M 939 397 C 639 600, 519 610, 470 600" stroke="rgba(219,39,119,0.5)" strokeWidth="130" strokeLinecap="round" style={{ filter: "blur(2.6vw)" }} />
-
-            {/* Mid glow — tighter, brighter pink */}
-            <path ref={leftMidGlowRef} d="M 0 397 C 300 600, 420 610, 469 600" stroke="rgba(244,114,182,0.75)" strokeWidth="34" strokeLinecap="round" style={{ filter: "blur(1vw)" }} />
-            <path ref={rightMidGlowRef} d="M 939 397 C 639 600, 519 610, 470 600" stroke="rgba(244,114,182,0.75)" strokeWidth="34" strokeLinecap="round" style={{ filter: "blur(1vw)" }} />
-
-            {/* Sharp core line — the crisp white edge the eye tracks */}
-            <path
-              ref={leftEnergyRef}
-              d="M 0 397 C 300 600, 420 610, 469 600"
-              stroke="#ffffff"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
-            />
-            <path
-              ref={rightEnergyRef}
-              d="M 939 397 C 639 600, 519 610, 470 600"
-              stroke="#ffffff"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(244,114,182,0.7))" }}
-            />
-          </svg>
-
-          {/* Bright core bloom at the center dip / collision point (Phase 4) */}
-          <div
-            ref={coreGlowRef}
-            className="absolute pointer-events-none z-[7]"
-            style={{
-              left: "50%",
-              top: "64.3%",
-              width: "58%",
-              height: "24%",
-              transform: "translate(-50%, -50%)",
-              background:
-                "radial-gradient(ellipse 50% 55% at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(253,242,248,0.75) 22%, rgba(244,114,182,0.5) 48%, rgba(219,39,119,0.18) 68%, transparent 82%)",
-              filter: "blur(2.4vw)",
-            }}
-          />
-
-          {/* Downward light waterfall into the chip (Phase 5) */}
-          <div
-            ref={beamRef}
-            className="absolute pointer-events-none z-[8]"
-            style={{
-              left: "50%",
-              top: "61%",
-              width: "9%",
-              height: "19%",
-              transform: "translateX(-50%)",
-              background: "linear-gradient(to bottom, #ffffff 0%, #fdf2f8 22%, rgba(244,114,182,0.85) 55%, rgba(219,39,119,0.1) 100%)",
-              clipPath: "polygon(18% 0%, 82% 0%, 64% 100%, 36% 100%)",
-              filter: "blur(1vw)",
-            }}
-          />
-
-          {/* SYSTEM B — chip → card circuit wires (Phase 7), a separate SVG
-              so it always sits above the chip/card layer stacking below */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none z-10"
-            viewBox="0 0 939 933"
-            preserveAspectRatio="none"
-            fill="none"
-          >
-            <defs>
-              <linearGradient id="neonCircuitWireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-                <stop offset="40%" stopColor="#fdf2f8" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#f9a8d4" stopOpacity="0.85" />
-              </linearGradient>
-            </defs>
-            <path ref={wireTopLeftRef} d="M 385 788 C 300 788, 260 742, 215 742" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
-            <path ref={wireBottomLeftRef} d="M 385 842 C 300 842, 260 887, 215 887" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
-            <path ref={wireTopRightRef} d="M 555 788 C 640 788, 680 742, 730 742" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
-            <path ref={wireBottomRightRef} d="M 555 842 C 640 842, 680 887, 730 887" stroke="url(#neonCircuitWireGrad)" strokeWidth="1.6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))" }} />
-          </svg>
-
-          {/* Token orbit — vertical center pinned at 18.6% */}
-          <div
-            ref={orbitRef}
-            className="absolute left-1/2 z-20 flex items-center justify-center w-[92%]"
-            style={{ top: "18.6%", transform: "translate(-50%, -50%)" }}
-          >
-            <div className="flex items-center gap-[1.2%] flex-1 justify-end pr-[1%]">
-              {leftTokens.map((tk) => (
-                <div key={tk.symbol} className={`${dimFor(tk.size)} aspect-square rounded-full border border-white/12 flex items-center justify-center overflow-hidden`}
-                  style={{ backgroundColor: tk.bgColor, boxShadow: `0 0 24px ${tk.glow}45, 0 6px 20px rgba(0,0,0,0.85)` }}>
-                  <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">{tk.icon}</span>
-                </div>
-              ))}
+          {/* Central Speedometer Rocket Badge */}
+          <div className="relative shrink-0 flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36">
+            {/* Pulsing ring aura */}
+            <div
+              className="absolute inset-0 rounded-full border border-pink-500/30 animate-[spin_14s_linear_infinite]"
+              style={{ boxShadow: "0 0 35px rgba(219,39,119,0.35)" }}
+            >
+              <div className="absolute w-2.5 h-2.5 rounded-full bg-[#f472b6] top-1 right-3 shadow-[0_0_12px_#f472b6]" />
+              <div className="absolute w-2.5 h-2.5 rounded-full bg-[#c084fc] bottom-1 left-3 shadow-[0_0_12px_#c084fc]" />
             </div>
 
-            <div className="relative shrink-0 flex items-center justify-center w-[23.4%] aspect-square mx-[1%]">
-              <div className="absolute inset-0 rounded-full border border-pink-500/25" style={{ boxShadow: "0 0 30px rgba(219,39,119,0.25)" }}>
-                <div className="absolute w-[7%] h-[7%] rounded-full bg-[#f472b6]" style={{ top: "5%", right: "14%", boxShadow: "0 0 14px #f472b6, 0 0 28px rgba(244,114,182,0.8)" }} />
-                <div className="absolute w-[7%] h-[7%] rounded-full bg-[#c084fc]" style={{ bottom: "5%", left: "14%", boxShadow: "0 0 14px #c084fc, 0 0 28px rgba(192,132,252,0.8)" }} />
-              </div>
-              <div
-                className="w-[74%] h-[74%] rounded-full bg-[#120e20] border border-white/18 flex items-center justify-center relative overflow-hidden"
-                style={{ boxShadow: "0 0 50px rgba(219,39,119,0.45), 0 0 100px rgba(219,39,119,0.25), inset 0 0 24px rgba(0,0,0,0.7)" }}
-              >
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 130 130">
-                  <path d="M 22 82 A 46 46 0 0 1 108 82" fill="none" stroke="url(#rocketSpeedometerArc)" strokeWidth="5" strokeLinecap="round" />
-                  <defs>
-                    <linearGradient id="rocketSpeedometerArc" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#7928CA" />
-                      <stop offset="50%" stopColor="#db2777" />
-                      <stop offset="100%" stopColor="#f472b6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <Rocket
-                  className="relative z-10 w-[42%] h-[42%] text-white stroke-[2]"
-                  style={{ filter: "drop-shadow(0 0 16px rgba(255,255,255,1))" }}
+            <div
+              className="w-[78%] h-[78%] rounded-full bg-[#100c1d] border-2 border-white/20 flex items-center justify-center relative overflow-hidden shadow-[0_0_50px_rgba(219,39,119,0.5),inset_0_0_24px_rgba(0,0,0,0.8)]"
+            >
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 130 130">
+                <path
+                  d="M 24 86 A 44 44 0 0 1 106 86"
+                  fill="none"
+                  stroke="url(#rocketMeterGradExact)"
+                  strokeWidth="5.5"
+                  strokeLinecap="round"
                 />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-[1.2%] flex-1 justify-start pl-[1%]">
-              {rightTokens.map((tk) => (
-                <div key={tk.symbol} className={`${dimFor(tk.size)} aspect-square rounded-full border border-white/12 flex items-center justify-center overflow-hidden`}
-                  style={{ backgroundColor: tk.bgColor, boxShadow: `0 0 24px ${tk.glow}45, 0 6px 20px rgba(0,0,0,0.85)` }}>
-                  <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">{tk.icon}</span>
-                </div>
-              ))}
+                <defs>
+                  <linearGradient id="rocketMeterGradExact" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#7928CA" />
+                    <stop offset="50%" stopColor="#db2777" />
+                    <stop offset="100%" stopColor="#f472b6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <Rocket
+                className="relative z-10 w-[44%] h-[44%] text-white stroke-[2.2] drop-shadow-[0_0_18px_rgba(255,255,255,1)]"
+              />
             </div>
           </div>
 
-          {/* Headline block — top anchored at 36.4% */}
-          <div ref={headerWrapRef} className="absolute left-1/2 z-20 flex flex-col items-center text-center w-[90%]" style={{ top: "36.4%", transform: "translateX(-50%)" }}>
-            <h2
-              className="text-white leading-[1.12]"
-              style={{ fontFamily: "var(--font-outfit, sans-serif)", fontWeight: 300, letterSpacing: "-0.02em", fontSize: "clamp(22px, 4.6vw, 60px)" }}
-            >
-              10K+ Crypto Assets <br />
-              <span style={{ fontWeight: 400 }}>Available To Trade</span>
-            </h2>
-            <p
-              className="text-[#9ca3af] max-w-xl leading-relaxed"
-              style={{ fontFamily: "var(--font-outfit, sans-serif)", fontWeight: 300, fontSize: "clamp(11px, 1.3vw, 16px)", marginTop: "2.2%" }}
-            >
-              Explore every potential Crypto Assets with AI assistance
-            </p>
-            <div className="flex items-center" style={{ gap: "3%", marginTop: "3.2%" }}>
-              <button type="button" className="text-[#9ca3af] hover:text-white transition-colors cursor-pointer" style={{ fontFamily: "var(--font-outfit, sans-serif)", fontSize: "clamp(11px, 1.3vw, 15px)" }}>
-                Learn More
-              </button>
-              <button
-                type="button"
-                className="rounded-full font-medium text-white flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+          {/* Right Token Cluster */}
+          <div className="hidden sm:flex items-center gap-2 md:gap-3.5 flex-1 justify-start">
+            {rightTokens.map((tk) => (
+              <div
+                key={tk.symbol}
+                className={`${dimFor(tk.size)} shrink-0 rounded-full border border-white/15 flex items-center justify-center transition-all duration-300 hover:scale-115 hover:border-pink-400`}
                 style={{
-                  background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
-                  boxShadow: "0 0 28px rgba(219,39,119,0.5), 0 0 56px rgba(219,39,119,0.25)",
-                  fontFamily: "var(--font-outfit, sans-serif)",
-                  fontSize: "clamp(11px, 1.3vw, 15px)",
-                  padding: "2.4% 5.5%",
+                  backgroundColor: tk.bgColor,
+                  boxShadow: `0 0 24px ${tk.glow}35, inset 0 0 10px rgba(255,255,255,0.15)`,
                 }}
               >
-                <span>Start Trading Now</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Chip */}
-          <div className="absolute z-30" style={{ left: "41%", top: "78.78%", width: "18.1%" }}>
-            <div className="relative w-full aspect-square flex items-center justify-center">
-              <div ref={chipAuraRef} className="absolute pointer-events-none" style={{ width: "140%", height: "140%", background: "radial-gradient(circle, rgba(219,39,119,0.7) 0%, rgba(219,39,119,0.2) 50%, transparent 75%)", filter: "blur(24px)" }} />
-              <div className="relative w-full h-full rounded-[18%] bg-[#090b10] border-2 border-white/20 p-[8%] flex items-center justify-center shadow-[0_0_60px_rgba(219,39,119,0.55),inset_0_0_20px_rgba(0,0,0,0.9)]">
-                <div className="absolute top-[6%] left-[6%] w-[3%] h-[3%] rounded-full bg-white/40" />
-                <div className="absolute top-[6%] right-[6%] w-[3%] h-[3%] rounded-full bg-white/40" />
-                <div className="absolute bottom-[6%] left-[6%] w-[3%] h-[3%] rounded-full bg-white/40" />
-                <div className="absolute bottom-[6%] right-[6%] w-[3%] h-[3%] rounded-full bg-white/40" />
-                <div
-                  ref={chipCoreRef}
-                  className="relative w-full h-full rounded-[13%] flex items-center justify-center shadow-inner overflow-hidden"
-                  style={{ background: "linear-gradient(135deg, #ff4365 0%, #db2777 50%, #9333ea 100%)" }}
-                >
-                  <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:12px_12px]" />
-                  <div className="relative z-10 text-white w-[46%] h-[46%]">
-                    <Cpu className="w-full h-full stroke-[1.6]" />
-                    <div ref={chipIconGlowRef} className="absolute inset-0 pointer-events-none" style={{ filter: "drop-shadow(0 0 16px rgba(255,255,255,0.95))" }} />
-                  </div>
-                </div>
+                <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">
+                  {tk.icon}
+                </span>
               </div>
-            </div>
+            ))}
           </div>
 
-          {/* Metric cards, positioned to match reference exactly */}
-          <div className="absolute z-20" style={{ left: "4.79%", top: "76.63%", width: "18.1%" }}>
-            <MetricCard metric={metrics[0]} cardRef={(el) => { cardRefs.current[0] = el; }} />
-          </div>
-          <div className="absolute z-20" style={{ left: "4.79%", top: "92.18%", width: "18.1%" }}>
-            <MetricCard metric={metrics[1]} cardRef={(el) => { cardRefs.current[1] = el; }} />
-          </div>
-          <div className="absolute z-20" style={{ left: "77.74%", top: "76.63%", width: "18.1%" }}>
-            <MetricCard metric={metrics[2]} cardRef={(el) => { cardRefs.current[2] = el; }} />
-          </div>
-          <div className="absolute z-20" style={{ left: "77.74%", top: "92.18%", width: "18.1%" }}>
-            <MetricCard metric={metrics[3]} cardRef={(el) => { cardRefs.current[3] = el; }} />
+          {/* Mobile Tokens */}
+          <div className="flex sm:hidden items-center gap-1.5 flex-wrap justify-center">
+            {[...leftTokens.slice(-2), ...rightTokens.slice(0, 2)].map((tk) => (
+              <div
+                key={tk.symbol}
+                className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center"
+                style={{ backgroundColor: tk.bgColor }}
+              >
+                <span style={{ color: tk.textColor, fontSize: "11px" }}>{tk.icon}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════
-            MOBILE — simplified stacked layout. Same visual language
-            (curve glow, chip, wires, cards) with lighter geometry/blur.
-        ══════════════════════════════════════════════════════════════ */}
-        <div className="sm:hidden flex flex-col items-center px-4 pt-10">
-          <div ref={mobileOrbitRef} className="flex items-center justify-center gap-1.5 mb-8 flex-wrap max-w-full">
-            {[...leftTokens.slice(-3), ...rightTokens.slice(0, 3)].map((tk) => (
-              <div key={tk.symbol} className="w-8 h-8 rounded-full border border-white/12 flex items-center justify-center overflow-hidden" style={{ backgroundColor: tk.bgColor, boxShadow: `0 0 14px ${tk.glow}45` }}>
-                <span style={{ color: tk.textColor, fontSize: "12px" }} className="flex items-center justify-center w-full h-full">{tk.icon}</span>
-              </div>
-            ))}
-          </div>
+        {/* Section Headline */}
+        <div ref={headerWrapRef} className="text-center max-w-3xl mx-auto flex flex-col items-center">
+          <h2
+            className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-[58px] font-light tracking-tight leading-[1.12]"
+            style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
+          >
+            10K+ Crypto Assets <br />
+            <span className="font-normal">
+              Available To Trade
+            </span>
+          </h2>
+          <p
+            className="mt-3 text-sm sm:text-base text-gray-400 max-w-lg font-light leading-relaxed"
+            style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
+          >
+            Explore every potential Crypto Assets with AI assistance
+          </p>
 
-          <div ref={mobileHeaderWrapRef} className="flex flex-col items-center text-center">
-            <h2 className="text-white leading-[1.15] text-[28px]" style={{ fontFamily: "var(--font-outfit, sans-serif)", fontWeight: 300, letterSpacing: "-0.02em" }}>
-              10K+ Crypto Assets <br />
-              <span style={{ fontWeight: 400 }}>Available To Trade</span>
-            </h2>
-            <p className="mt-3 text-[13px] text-[#9ca3af] max-w-xs leading-relaxed" style={{ fontFamily: "var(--font-outfit, sans-serif)", fontWeight: 300 }}>
-              Explore every potential Crypto Assets with AI assistance
-            </p>
-            <div className="mt-5 flex items-center gap-5">
-              <button type="button" className="text-[13px] text-[#9ca3af]">Learn More</button>
-              <button type="button" className="px-5 py-2.5 rounded-full text-[13px] font-medium text-white flex items-center gap-2" style={{ background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)", boxShadow: "0 0 24px rgba(219,39,119,0.5)" }}>
-                Start Trading Now <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Simplified glow + beam */}
-          <div className="relative w-full flex justify-center mt-10" style={{ height: 140 }}>
-            <div className="absolute inset-0" style={{ background: "radial-gradient(60% 100% at 50% 0%, rgba(219,39,119,0.55), transparent 70%)", filter: "blur(20px)" }} />
-            <div ref={mobileBeamRef} className="absolute bottom-0 w-16 h-full" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f9a8d4 40%, rgba(219,39,119,0.1) 100%)", filter: "blur(6px)", transformOrigin: "50% 0%" }} />
-          </div>
-
-          {/* Chip + wires */}
-          <div className="relative flex items-center justify-center" style={{ width: "100%", maxWidth: 320 }}>
-            <svg viewBox="0 0 320 180" className="absolute inset-0 w-full pointer-events-none" style={{ height: 180 }}>
-              <defs>
-                <linearGradient id="mobileWireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#f9a8d4" stopOpacity="0.85" />
-                </linearGradient>
-              </defs>
-              <path ref={(el) => { mobileWireRefs.current[0] = el; }} d="M 130 70 C 90 70, 60 40, 20 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => { mobileWireRefs.current[1] = el; }} d="M 130 110 C 90 110, 60 150, 20 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => { mobileWireRefs.current[2] = el; }} d="M 190 70 C 230 70, 260 40, 300 40" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-              <path ref={(el) => { mobileWireRefs.current[3] = el; }} d="M 190 110 C 230 110, 260 150, 300 150" stroke="url(#mobileWireGrad)" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-            <div className="relative z-10 w-[112px] aspect-square rounded-[20px] bg-[#090b10] border-2 border-white/20 p-3 flex items-center justify-center shadow-[0_0_40px_rgba(219,39,119,0.55)]">
-              <div ref={mobileChipCoreRef} className="w-full h-full rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ff4365 0%, #db2777 50%, #9333ea 100%)" }}>
-                <Cpu className="w-9 h-9 text-white stroke-[1.6]" />
-              </div>
-            </div>
-          </div>
-
-          {/* Cards, 2×2 grid */}
-          <div className="grid grid-cols-2 gap-3 w-full max-w-[340px] mt-6">
-            {metrics.map((m, i) => (
-              <div
-                key={m.label}
-                ref={(el) => { mobileCardRefs.current[i] = el; }}
-                className="bg-[#0e1017]/95 border border-white/10 rounded-xl p-3 flex items-center gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.85)]"
-              >
-                <div className="w-8 h-8 shrink-0 rounded-lg bg-[#161a26] border border-white/10 flex items-center justify-center">
-                  <div className="w-4 h-4">{m.icon}</div>
-                </div>
-                <div>
-                  <div className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>{m.value}</div>
-                  <div className="text-[10px] text-[#9ca3af] font-medium">{m.label}</div>
-                </div>
-              </div>
-            ))}
+          {/* Action Buttons */}
+          <div className="mt-6 flex items-center gap-5">
+            <button
+              type="button"
+              className="text-sm text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer font-medium px-2 py-1"
+            >
+              Learn More
+            </button>
+            <button
+              type="button"
+              className="rounded-full px-6 py-2.5 text-sm font-medium text-white flex items-center gap-2 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(219,39,119,0.5)]"
+              style={{
+                background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
+              }}
+            >
+              <span>Start Trading Now</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          CINEMATIC FULL-WIDTH LIGHTING & CPU HUB STAGE (DESKTOP & TABLET)
+          EXACT ANGLED V-SHAPED DIP COLLISION MATCHING USER SCREENSHOT
+      ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative w-full mt-10 md:mt-16 hidden md:block" style={{ height: "680px" }}>
+        {/* 1. Purple Plasma Horizon Atmosphere Underneath the Curve */}
+        <div
+          ref={auroraUnderglowRef}
+          className="absolute inset-x-0 bottom-0 pointer-events-none z-[2]"
+          style={{
+            height: "85%",
+            background:
+              "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(147,51,234,0.6) 0%, rgba(219,39,119,0.4) 35%, rgba(124,58,237,0.18) 60%, transparent 80%)",
+            filter: "blur(50px)",
+          }}
+        />
+
+        {/* 2. Brilliant Collision Bloom at Angled V-Vertex (x=50%, y=330px) */}
+        <div
+          ref={centerBloomRef}
+          className="absolute pointer-events-none z-[8]"
+          style={{
+            left: "50%",
+            top: "330px",
+            width: "360px",
+            height: "180px",
+            transform: "translate(-50%, -50%)",
+            background:
+              "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,255,255,1) 0%, rgba(253,242,248,0.92) 25%, rgba(244,114,182,0.7) 55%, rgba(147,51,234,0.25) 75%, transparent 92%)",
+            filter: "blur(20px)",
+          }}
+        />
+
+        {/* 3. Downward Light Stream Column (Waterfall effect from V-tip into chip) */}
+        <div
+          ref={verticalBeamDivRef}
+          className="absolute pointer-events-none z-[6]"
+          style={{
+            left: "50%",
+            top: "330px",
+            width: "100px",
+            height: "140px",
+            transform: "translateX(-50%)",
+            background:
+              "radial-gradient(ellipse 50% 100% at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(244,114,182,0.6) 45%, rgba(147,51,234,0.2) 75%, transparent 100%)",
+            filter: "blur(14px)",
+          }}
+        />
+
+        {/* 4. Full-Width Vector Canvas (Angled V-Curve + Downward Beam + Circuit Wires) */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none z-[10]"
+          viewBox="0 0 1920 680"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <defs>
+            {/* Gradient for left sweeping angled curve */}
+            <linearGradient id="horizonCurveGradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.75" />
+              <stop offset="65%" stopColor="#ec4899" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+            </linearGradient>
+
+            {/* Gradient for right sweeping angled curve */}
+            <linearGradient id="horizonCurveGradRight" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.75" />
+              <stop offset="65%" stopColor="#ec4899" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+            </linearGradient>
+
+            {/* Gradient for central V-trough luminous fill */}
+            <linearGradient id="centerVFillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#fdf2f8" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#f472b6" stopOpacity="0.7" />
+            </linearGradient>
+
+            {/* Gradient for circuit wires */}
+            <linearGradient id="exactCircuitWireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#f472b6" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#a855f7" stopOpacity="0.8" />
+            </linearGradient>
+
+            {/* Gradient for vertical laser beam */}
+            <linearGradient id="exactVerticalLaserGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="50%" stopColor="#fdf2f8" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#db2777" stopOpacity="0.85" />
+            </linearGradient>
+          </defs>
+
+          {/* ── CENTRAL V-POCKET LUMINOUS FILL (The glowing V shape right at the dip) ── */}
+          <polygon
+            ref={centerVFillRef}
+            points="780,200 960,330 1140,200 960,250"
+            fill="url(#centerVFillGrad)"
+            style={{ filter: "blur(10px)" }}
+          />
+
+          {/* ── LEFT ANGLED HORIZON CURVE (Edge 0,50 -> Angled Dip to 960,330) ── */}
+          {/* Outer diffuse glow */}
+          <path
+            ref={leftCurveGlowRef}
+            d="M 0 50 C 450 170, 680 195, 780 200 C 850 205, 920 255, 960 330"
+            stroke="rgba(147,51,234,0.5)"
+            strokeWidth="56"
+            strokeLinecap="round"
+            style={{ filter: "blur(26px)" }}
+          />
+          {/* Mid magenta beam */}
+          <path
+            ref={leftCurveMidRef}
+            d="M 0 50 C 450 170, 680 195, 780 200 C 850 205, 920 255, 960 330"
+            stroke="rgba(244,114,182,0.9)"
+            strokeWidth="16"
+            strokeLinecap="round"
+            style={{ filter: "blur(8px)" }}
+          />
+          {/* Sharp core white-hot laser */}
+          <path
+            ref={leftCurveLaserRef}
+            d="M 0 50 C 450 170, 680 195, 780 200 C 850 205, 920 255, 960 330"
+            stroke="url(#horizonCurveGradLeft)"
+            strokeWidth="3.4"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 16px rgba(244,114,182,1))" }}
+          />
+
+          {/* ── RIGHT ANGLED HORIZON CURVE (Edge 1920,50 -> Angled Dip to 960,330) ── */}
+          {/* Outer diffuse glow */}
+          <path
+            ref={rightCurveGlowRef}
+            d="M 1920 50 C 1470 170, 1240 195, 1140 200 C 1070 205, 1000 255, 960 330"
+            stroke="rgba(147,51,234,0.5)"
+            strokeWidth="56"
+            strokeLinecap="round"
+            style={{ filter: "blur(26px)" }}
+          />
+          {/* Mid magenta beam */}
+          <path
+            ref={rightCurveMidRef}
+            d="M 1920 50 C 1470 170, 1240 195, 1140 200 C 1070 205, 1000 255, 960 330"
+            stroke="rgba(244,114,182,0.9)"
+            strokeWidth="16"
+            strokeLinecap="round"
+            style={{ filter: "blur(8px)" }}
+          />
+          {/* Sharp core white-hot laser */}
+          <path
+            ref={rightCurveLaserRef}
+            d="M 1920 50 C 1470 170, 1240 195, 1140 200 C 1070 205, 1000 255, 960 330"
+            stroke="url(#horizonCurveGradRight)"
+            strokeWidth="3.4"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 16px rgba(244,114,182,1))" }}
+          />
+
+          {/* ── DOWNWARD VERTICAL BEAM (V-Vertex 960,330 -> Chip 960,440) ── */}
+          <path
+            ref={verticalBeamGlowRef}
+            d="M 960 330 L 960 440"
+            stroke="rgba(244,114,182,0.85)"
+            strokeWidth="34"
+            strokeLinecap="round"
+            style={{ filter: "blur(12px)" }}
+          />
+          <path
+            ref={verticalBeamLaserRef}
+            d="M 960 330 L 960 440"
+            stroke="url(#exactVerticalLaserGrad)"
+            strokeWidth="5.2"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 10px #ffffff) drop-shadow(0 0 20px rgba(219,39,119,1))" }}
+          />
+
+          {/* ── CIRCUIT OUTPUT WIRES (Chip -> 4 Metric Cards) ── */}
+          {/* Top-Left Card (Chip 880,480 -> Card 380,440) */}
+          <path
+            ref={wireTLRef}
+            d="M 880 480 C 680 480, 520 440, 390 440"
+            stroke="url(#exactCircuitWireGrad)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 4px rgba(244,114,182,0.9))" }}
+          />
+          {/* Bottom-Left Card (Chip 880,560 -> Card 380,580) */}
+          <path
+            ref={wireBLRef}
+            d="M 880 560 C 680 560, 520 580, 390 580"
+            stroke="url(#exactCircuitWireGrad)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 4px rgba(244,114,182,0.9))" }}
+          />
+          {/* Top-Right Card (Chip 1040,480 -> Card 1530,440) */}
+          <path
+            ref={wireTRRef}
+            d="M 1040 480 C 1240 480, 1400 440, 1530 440"
+            stroke="url(#exactCircuitWireGrad)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 4px rgba(244,114,182,0.9))" }}
+          />
+          {/* Bottom-Right Card (Chip 1040,560 -> Card 1530,580) */}
+          <path
+            ref={wireBRRef}
+            d="M 1040 560 C 1240 560, 1400 580, 1530 580"
+            stroke="url(#exactCircuitWireGrad)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0 0 4px rgba(244,114,182,0.9))" }}
+          />
+        </svg>
+
+        {/* 5. CENTRAL CPU CHIP (Positioned below the V-dip) */}
+        <div
+          ref={chipContainerRef}
+          className="absolute z-20 left-1/2"
+          style={{ top: "430px", transform: "translateX(-50%)" }}
+        >
+          <div className="relative w-40 h-40 flex items-center justify-center">
+            {/* Ambient radiating aura */}
+            <div
+              ref={chipAuraRef}
+              className="absolute pointer-events-none"
+              style={{
+                width: "230%",
+                height: "230%",
+                background:
+                  "radial-gradient(circle, rgba(219,39,119,0.75) 0%, rgba(147,51,234,0.4) 45%, transparent 75%)",
+                filter: "blur(30px)",
+              }}
+            />
+
+            {/* Chip Outer Black Shell with Subtle Chamfer Bezel */}
+            <div className="relative w-full h-full rounded-[28px] bg-[#0b0d13] border-2 border-white/20 p-3.5 flex items-center justify-center shadow-[0_0_70px_rgba(219,39,119,0.7),inset_0_0_24px_rgba(0,0,0,0.95)]">
+              {/* Corner LED accents */}
+              <div className="absolute top-2.5 left-2.5 w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]" />
+              <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]" />
+              <div className="absolute bottom-2.5 left-2.5 w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]" />
+              <div className="absolute bottom-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]" />
+
+              {/* Glowing Gradient Core */}
+              <div
+                ref={chipCoreRef}
+                className="relative w-full h-full rounded-[20px] flex items-center justify-center shadow-inner overflow-hidden"
+                style={{ background: "linear-gradient(135deg, #ff3b69 0%, #db2777 48%, #9333ea 100%)" }}
+              >
+                {/* Circuit Grid Pattern */}
+                <div
+                  className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px),
+                                      linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+                    backgroundSize: "11px 11px",
+                  }}
+                />
+
+                {/* Central CPU Icon */}
+                <div className="relative z-10 text-white w-14 h-14 flex items-center justify-center">
+                  <Cpu className="w-full h-full stroke-[2]" />
+                  <div
+                    ref={chipIconGlowRef}
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ filter: "drop-shadow(0 0 18px rgba(255,255,255,1))" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 6. 4 METRIC CARDS */}
+        <div className="relative z-20 max-w-[1400px] h-full mx-auto px-6 pointer-events-none">
+          {/* Card 0: Top-Left (50+ Countries) */}
+          <div
+            ref={(el) => { cardRefs.current[0] = el; }}
+            className="absolute left-6 pointer-events-auto bg-[#0a0c13]/95 border border-white/10 hover:border-pink-500/50 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] flex items-center gap-4 px-5 py-4 transition-all duration-300 hover:scale-105"
+            style={{ top: "415px", width: "235px" }}
+          >
+            <div className="shrink-0 w-11 h-11 rounded-xl bg-[#141722] border border-white/10 flex items-center justify-center">
+              {metrics[0].icon}
+            </div>
+            <div>
+              <div className="font-bold text-white text-xl leading-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                {metrics[0].value}
+              </div>
+              <div className="text-xs text-gray-400 font-medium tracking-wide mt-0.5">
+                {metrics[0].label}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 1: Bottom-Left (10K+ Crypto Assets) */}
+          <div
+            ref={(el) => { cardRefs.current[1] = el; }}
+            className="absolute left-6 pointer-events-auto bg-[#0a0c13]/95 border border-white/10 hover:border-pink-500/50 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] flex items-center gap-4 px-5 py-4 transition-all duration-300 hover:scale-105"
+            style={{ top: "555px", width: "235px" }}
+          >
+            <div className="shrink-0 w-11 h-11 rounded-xl bg-[#141722] border border-white/10 flex items-center justify-center">
+              {metrics[1].icon}
+            </div>
+            <div>
+              <div className="font-bold text-white text-xl leading-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                {metrics[1].value}
+              </div>
+              <div className="text-xs text-gray-400 font-medium tracking-wide mt-0.5">
+                {metrics[1].label}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Top-Right (97.5% Success Rate) */}
+          <div
+            ref={(el) => { cardRefs.current[2] = el; }}
+            className="absolute right-6 pointer-events-auto bg-[#0a0c13]/95 border border-white/10 hover:border-pink-500/50 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] flex items-center gap-4 px-5 py-4 transition-all duration-300 hover:scale-105"
+            style={{ top: "415px", width: "235px" }}
+          >
+            <div className="shrink-0 w-11 h-11 rounded-xl bg-[#141722] border border-white/10 flex items-center justify-center">
+              {metrics[2].icon}
+            </div>
+            <div>
+              <div className="font-bold text-white text-xl leading-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                {metrics[2].value}
+              </div>
+              <div className="text-xs text-gray-400 font-medium tracking-wide mt-0.5">
+                {metrics[2].label}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Bottom-Right (10,000+ Daily Traders) */}
+          <div
+            ref={(el) => { cardRefs.current[3] = el; }}
+            className="absolute right-6 pointer-events-auto bg-[#0a0c13]/95 border border-white/10 hover:border-pink-500/50 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] flex items-center gap-4 px-5 py-4 transition-all duration-300 hover:scale-105"
+            style={{ top: "555px", width: "235px" }}
+          >
+            <div className="shrink-0 w-11 h-11 rounded-xl bg-[#141722] border border-white/10 flex items-center justify-center">
+              {metrics[3].icon}
+            </div>
+            <div>
+              <div className="font-bold text-white text-xl leading-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                {metrics[3].value}
+              </div>
+              <div className="text-xs text-gray-400 font-medium tracking-wide mt-0.5">
+                {metrics[3].label}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          MOBILE VIEW (< 768px)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <div className="md:hidden flex flex-col items-center px-4 mt-8">
+        {/* Converging V sweep above chip */}
+        <div className="relative w-full flex justify-center" style={{ height: "140px" }}>
+          <svg viewBox="0 0 320 140" className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+            <path
+              ref={mobileSweepLeftRef}
+              d="M 10 10 C 80 25, 120 35, 135 40 C 145 45, 155 70, 160 115"
+              stroke="#ffffff"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              style={{ filter: "drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 14px rgba(244,114,182,0.9))" }}
+            />
+            <path
+              ref={mobileSweepRightRef}
+              d="M 310 10 C 240 25, 200 35, 185 40 C 175 45, 165 70, 160 115"
+              stroke="#ffffff"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              style={{ filter: "drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 14px rgba(244,114,182,0.9))" }}
+            />
+          </svg>
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: "50%",
+              bottom: 0,
+              width: "110px",
+              height: "110px",
+              transform: "translateX(-50%)",
+              background: "radial-gradient(ellipse 60% 60% at 50% 100%, rgba(244,114,182,0.8) 0%, rgba(147,51,234,0.35) 50%, transparent 80%)",
+              filter: "blur(18px)",
+            }}
+          />
+        </div>
+
+        {/* Mobile Chip + Wires */}
+        <div className="relative flex items-center justify-center mt-2" style={{ width: "100%", maxWidth: "320px" }}>
+          <svg viewBox="0 0 320 160" className="absolute inset-0 w-full pointer-events-none" style={{ height: "160px" }}>
+            <defs>
+              <linearGradient id="mobileWireGradExact" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#f9a8d4" stopOpacity="0.85" />
+              </linearGradient>
+            </defs>
+            <path ref={(el) => { mobileWireRefs.current[0] = el; }} d="M 130 60 C 90 60, 60 30, 20 30" stroke="url(#mobileWireGradExact)" strokeWidth="1.8" strokeLinecap="round" />
+            <path ref={(el) => { mobileWireRefs.current[1] = el; }} d="M 130 100 C 90 100, 60 140, 20 140" stroke="url(#mobileWireGradExact)" strokeWidth="1.8" strokeLinecap="round" />
+            <path ref={(el) => { mobileWireRefs.current[2] = el; }} d="M 190 60 C 230 60, 260 30, 300 30" stroke="url(#mobileWireGradExact)" strokeWidth="1.8" strokeLinecap="round" />
+            <path ref={(el) => { mobileWireRefs.current[3] = el; }} d="M 190 100 C 230 100, 260 140, 300 140" stroke="url(#mobileWireGradExact)" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          <div className="relative z-10 w-24 h-24 rounded-2xl bg-[#0a0c12] border-2 border-white/20 p-2.5 flex items-center justify-center shadow-[0_0_40px_rgba(219,39,119,0.55)]">
+            <div
+              ref={mobileChipCoreRef}
+              className="w-full h-full rounded-xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #ff3b69 0%, #db2777 50%, #9333ea 100%)" }}
+            >
+              <Cpu className="w-8 h-8 text-white stroke-[1.8]" />
+            </div>
+          </div>
+        </div>
+
+        {/* 2x2 Metric Cards Grid for Mobile */}
+        <div className="grid grid-cols-2 gap-3 w-full max-w-[340px] mt-6">
+          {metrics.map((m, i) => (
+            <div
+              key={m.label}
+              ref={(el) => { mobileCardRefs.current[i] = el; }}
+              className="bg-[#0a0c13]/95 border border-white/10 rounded-xl p-3 flex items-center gap-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.85)]"
+            >
+              <div className="w-8 h-8 shrink-0 rounded-lg bg-[#141722] border border-white/10 flex items-center justify-center">
+                {m.icon}
+              </div>
+              <div>
+                <div className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-outfit, sans-serif)" }}>
+                  {m.value}
+                </div>
+                <div className="text-[10px] text-gray-400 font-medium">{m.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
