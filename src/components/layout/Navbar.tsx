@@ -49,10 +49,10 @@ export default function Navbar() {
 
       {/* Right: Login + Get Started */}
       <div className="hidden md:flex items-center gap-4">
-        <button className="text-[12px] text-[#c9d0db] hover:text-white transition-colors cursor-pointer font-normal">
+        <button className="text-[15px] text-[#c9d0db] hover:text-white transition-colors cursor-pointer font-normal">
           Login
         </button>
-        <button className="px-3.5 py-[5px] rounded-full border border-white/20 bg-transparent hover:bg-white/5 text-[12px] font-normal text-white flex items-center gap-1 transition-all cursor-pointer">
+        <button className="px-3.5 py-[5px] rounded-full border border-white/20 bg-transparent hover:bg-white/5 text-[15px] font-normal text-white flex items-center gap-1 transition-all cursor-pointer">
           <span>Get started now</span>
           <ChevronRight className="w-3 h-3 text-gray-400" />
         </button>

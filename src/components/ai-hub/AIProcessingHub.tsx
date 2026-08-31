@@ -617,7 +617,6 @@ export default function AIProcessingHub() {
       <div className="md:hidden flex flex-col items-center px-4 py-8">
         <TokenOrbitBar />
 
-        {/* Mobile Chip */}
         <div className="relative z-10 w-24 h-24 rounded-2xl bg-[#0c0d14] border border-white/20 p-2.5 flex items-center justify-center shadow-[0_0_30px_rgba(219,39,119,0.4)] mt-8">
           <div
             className="w-full h-full rounded-xl flex items-center justify-center"
@@ -626,8 +625,6 @@ export default function AIProcessingHub() {
             <Cpu className="w-8 h-8 text-white stroke-[1.8]" />
           </div>
         </div>
-
-        {/* 2x2 Metric Cards Grid for Mobile */}
         <div className="grid grid-cols-2 gap-3 w-full max-w-[340px] mt-6">
           {metrics.map((m) => (
             <div
