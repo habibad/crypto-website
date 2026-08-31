@@ -1,140 +1,14 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { ArrowRight, Globe, Check, Users, Database, Cpu, Rocket } from "lucide-react";
+import { Globe, Check, Users, Database, Cpu } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import TokenOrbitBar from "./TokenOrbitBar";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-// ══════════════════════════════════════════════════════════════════════════
-// TOKEN ICONS & DATA (MATCHING IMAGE 1 EXACTLY)
-// ══════════════════════════════════════════════════════════════════════════
-
-interface TokenItem {
-  symbol: string;
-  bgColor: string;
-  textColor: string;
-  size: "sm" | "md" | "lg";
-  yOffset: number; // Arch curvature offset (px)
-  icon: React.ReactNode;
-}
-
-const tokensLeft: TokenItem[] = [
-  {
-    symbol: "ETH",
-    bgColor: "#222a42",
-    textColor: "#627eea",
-    size: "sm",
-    yOffset: 46,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="#8da4f7" className="w-[58%] h-[58%]">
-        <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
-      </svg>
-    ),
-  },
-  {
-    symbol: "BTC",
-    bgColor: "#F7931A",
-    textColor: "#ffffff",
-    size: "md",
-    yOffset: 30,
-    icon: <span className="font-bold text-xl leading-none">₿</span>,
-  },
-  {
-    symbol: "XRP",
-    bgColor: "#000000",
-    textColor: "#ffffff",
-    size: "md",
-    yOffset: 16,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" className="w-[52%] h-[52%]">
-        <path d="M4 4l5 5-5 5M20 4l-5 5 5 5" />
-      </svg>
-    ),
-  },
-  {
-    symbol: "SHIB",
-    bgColor: "#ffffff",
-    textColor: "#000000",
-    size: "lg",
-    yOffset: 6,
-    icon: (
-      <div className="w-full h-full rounded-full bg-[#FFA409] flex items-center justify-center p-1 border-2 border-white">
-        <span className="text-2xl">🐕</span>
-      </div>
-    ),
-  },
-  {
-    symbol: "LINK",
-    bgColor: "#2A5ADA",
-    textColor: "#ffffff",
-    size: "lg",
-    yOffset: 0,
-    icon: (
-      <svg viewBox="0 0 32 32" fill="#ffffff" className="w-[60%] h-[60%]">
-        <path d="M16 3l-4 2.3V12L8 9.7 4 12v8l4 2.3 4-2.3v6.7l4 2.3 4-2.3v-6.7l4 2.3 4-2.3v-8l-4-2.3L24 9.7V5.3z" />
-      </svg>
-    ),
-  },
-];
-
-const tokensRight: TokenItem[] = [
-  {
-    symbol: "USDT",
-    bgColor: "#26A17B",
-    textColor: "#ffffff",
-    size: "lg",
-    yOffset: 0,
-    icon: <span className="font-bold text-2xl leading-none text-white">₮</span>,
-  },
-  {
-    symbol: "LUNA",
-    bgColor: "#172852",
-    textColor: "#facc15",
-    size: "lg",
-    yOffset: 6,
-    icon: (
-      <div className="w-full h-full rounded-full bg-[#101B37] flex items-center justify-center border border-yellow-400/40">
-        <span className="text-2xl">🌙</span>
-      </div>
-    ),
-  },
-  {
-    symbol: "BNB",
-    bgColor: "#F3BA2F",
-    textColor: "#000000",
-    size: "md",
-    yOffset: 16,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="#000000" className="w-[62%] h-[62%]">
-        <path d="M12 2l3.5 3.5-3.5 3.5-3.5-3.5L12 2zm0 13l3.5 3.5-3.5 3.5-3.5-3.5L12 15zm-6.5-6.5L9 12l-3.5 3.5L2 12l3.5-3.5zm13 0L22 12l-3.5 3.5L15 12l3.5-3.5zM12 9l3 3-3 3-3-3 3-3z" />
-      </svg>
-    ),
-  },
-  {
-    symbol: "SEI",
-    bgColor: "#131d36",
-    textColor: "#38bdf8",
-    size: "sm",
-    yOffset: 30,
-    icon: (
-      <div className="w-full h-full rounded-full bg-[#0c1322] border border-cyan-500/40 flex items-center justify-center">
-        <span className="text-base font-bold text-cyan-400">🌊</span>
-      </div>
-    ),
-  },
-  {
-    symbol: "HBAR",
-    bgColor: "#111116",
-    textColor: "#888888",
-    size: "sm",
-    yOffset: 46,
-    icon: <span className="font-mono font-bold text-[#aaa] text-base">Ħ</span>,
-  },
-];
 
 const metrics = [
   { icon: <Globe className="w-5 h-5 text-white" />, value: "50+", label: "Countries" },
@@ -145,8 +19,7 @@ const metrics = [
 
 export default function AIProcessingHub() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const orbitBarRef = useRef<HTMLDivElement>(null);
-  const headerWrapRef = useRef<HTMLDivElement>(null);
+  const stageMotionRef = useRef<HTMLDivElement>(null);
 
   // Center Flares (Triggered strictly when curves collide in center)
   const centerFlareRef = useRef<HTMLDivElement>(null);
@@ -181,7 +54,7 @@ export default function AIProcessingHub() {
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   // ══════════════════════════════════════════════════════════════════════
-  // GSAP SCROLL PINNING & CINEMATIC LIGHTING SCRUB
+  // GSAP SCROLL PINNING & SYNCHRONIZED CAMERA TRACKING SCRUB
   // ══════════════════════════════════════════════════════════════════════
   useEffect(() => {
     if (!containerRef.current) return;
@@ -209,8 +82,10 @@ export default function AIProcessingHub() {
       });
 
       // 2. Initial dormant states
-      gsap.set(orbitBarRef.current, { opacity: 1, y: 0 });
-      gsap.set(headerWrapRef.current, { opacity: 1, y: 0 });
+      // Stage motion starts at y: +270px (bringing Token Orbit Arch + Headline to exact viewport middle)
+      if (stageMotionRef.current) {
+        gsap.set(stageMotionRef.current, { y: 270 });
+      }
 
       // Keep crescent curves dormant/invisible until scroll starts (prevents corner glow bleed)
       gsap.set(
@@ -225,17 +100,17 @@ export default function AIProcessingHub() {
         { opacity: 0 }
       );
 
-      // Keep center flares completely invisible while curves are traveling from edges
+      // Keep center flares completely invisible while curves travel from edges
       gsap.set(centerFlareRef.current, { opacity: 0, scale: 0.2 });
       gsap.set(centerAuroraBloomRef.current, { opacity: 0, scale: 0.5 });
       gsap.set(waterfallPillarRef.current, { opacity: 0, scaleY: 0, transformOrigin: "50% 0%" });
 
-      // Chip initial dormant state (completely hidden before scroll / beam arrival)
+      // Chip initial dormant state (hidden before waterfall beam arrives)
       gsap.set(chipContainerRef.current, { opacity: 0, scale: 0.7, y: 25 });
       gsap.set(chipAuraRef.current, { opacity: 0, scale: 0.3 });
       gsap.set(chipCoreRef.current, { opacity: 0.2, filter: "brightness(0.3) saturate(0.2)" });
 
-      // Cards initial state (completely hidden before circuit wire activation)
+      // Cards initial state (hidden before circuit wire activation)
       cardRefs.current.forEach((card) => {
         if (!card) return;
         gsap.set(card, { opacity: 0, y: 25, scale: 0.92, filter: "brightness(0.4)" });
@@ -246,7 +121,7 @@ export default function AIProcessingHub() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=2200",
+          end: "+=2600",
           pin: true,
           pinSpacing: true,
           anticipatePin: 1,
@@ -254,8 +129,7 @@ export default function AIProcessingHub() {
         },
       });
 
-      // ── STAGE 1: Left AND Right Curves Sweep Inward (0.00 -> 0.35) ──
-      // Fade in smoothly right as scroll starts so corners are pitch black before scrolling
+      // ── STAGE 1: Left AND Right Curves Sweep Inward to Center (0.00 -> 0.35) ──
       masterTL.to(
         [
           crescentLeftGlowRef.current,
@@ -282,48 +156,58 @@ export default function AIProcessingHub() {
         0
       );
 
-      // ── STAGE 2: Curves Collide in Center -> White-Hot Flare, Bloom & Waterfall Beam Flows Down (0.33 -> 0.55) ──
+      // ── STAGE 2: Curves Collide in Center Flare & Waterfall Laser Shoots Down (0.30 -> 0.65) ──
       masterTL.to(
         centerFlareRef.current,
         { opacity: 1, scale: 1, duration: 0.12, ease: "power2.out" },
-        0.33
+        0.30
       );
       masterTL.to(
         centerAuroraBloomRef.current,
-        { opacity: 1, scale: 1, duration: 0.2, ease: "power1.out" },
-        0.35
+        { opacity: 1, scale: 1, duration: 0.22, ease: "power1.out" },
+        0.32
       );
       masterTL.to(
         waterfallPillarRef.current,
-        { opacity: 1, scaleY: 1, duration: 0.2, ease: "power2.inOut" },
-        0.35
+        { opacity: 1, scaleY: 1, duration: 0.25, ease: "power2.inOut" },
+        0.32
       );
       if (waterfallLaserRef.current) {
         masterTL.to(
           waterfallLaserRef.current,
-          { strokeDashoffset: 0, duration: 0.2, ease: "power2.inOut" },
-          0.35
+          { strokeDashoffset: 0, duration: 0.25, ease: "power2.inOut" },
+          0.32
         );
       }
 
-      // ── STAGE 3: Downward Flow Reaches CPU Chip -> Chip Materializes & Radiant Halo Ignites (0.52 -> 0.70) ──
+      // ── STAGE 3: SYNCHRONIZED CAMERA TRACKING: STAGE GLIDES UPWARD (y: 270px -> 0px) (0.28 -> 0.65) ──
+      // Top content glides from middle to top margin, while CPU chip & cards rise into the lower/middle half of screen
+      if (stageMotionRef.current) {
+        masterTL.to(
+          stageMotionRef.current,
+          { y: 0, duration: 0.37, ease: "power1.inOut" },
+          0.28
+        );
+      }
+
+      // ── STAGE 4: Downward Flow Reaches CPU Chip In Center -> Chip Materializes & Halo Ignites (0.55 -> 0.75) ──
       masterTL.to(
         chipContainerRef.current,
-        { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(1.1)" },
-        0.52
+        { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "back.out(1.2)" },
+        0.55
       );
       masterTL.to(
         chipCoreRef.current,
-        { opacity: 1, filter: "brightness(1.15) saturate(1.15)", duration: 0.18, ease: "power2.out" },
-        0.52
+        { opacity: 1, filter: "brightness(1.2) saturate(1.2)", duration: 0.18, ease: "power2.out" },
+        0.55
       );
       masterTL.to(
         chipAuraRef.current,
-        { opacity: 1, scale: 1.25, duration: 0.2, ease: "power2.out" },
-        0.52
+        { opacity: 1, scale: 1.35, duration: 0.22, ease: "power2.out" },
+        0.55
       );
 
-      // ── STAGE 4: 4 Wires Shoot Horizontally into the 4 Metric Cards (0.68 -> 0.88) ──
+      // ── STAGE 5: 4 Wires Shoot Horizontally into the 4 Metric Cards (0.68 -> 0.88) ──
       const wires = [wireTLRef.current, wireBLRef.current, wireTRRef.current, wireBRRef.current];
       wires.forEach((w, i) => {
         if (w) masterTL.to(w, { strokeDashoffset: 0, duration: 0.18, ease: "power2.out" }, 0.68 + i * 0.02);
@@ -339,8 +223,8 @@ export default function AIProcessingHub() {
         }
       });
 
-      // ── STAGE 5: Hold fully-illuminated state before unpinning (0.90 -> 1.00) ──
-      masterTL.to({}, { duration: 0.10 }, 0.90);
+      // ── STAGE 6: Full-Screen Locked Freeze Before Seamless Unpin (0.88 -> 1.00) ──
+      masterTL.to({}, { duration: 0.12 }, 0.88);
     }, containerRef);
 
     return () => ctx.revert();
@@ -349,7 +233,7 @@ export default function AIProcessingHub() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-[#000000] text-white overflow-hidden select-none min-h-screen flex flex-col justify-center items-center"
+      className="relative w-full bg-[#000000] text-white overflow-hidden select-none h-screen flex flex-col justify-center items-center"
     >
       {/* ── CLEAN DEEP-SPACE BACKGROUND WITH SUBTLE VERTICAL MATRIX & STARS ── */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -387,11 +271,14 @@ export default function AIProcessingHub() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          UNIFIED DESKTOP STAGE (EXACT 1:1 WITH REFERENCE IMAGES)
+          UNIFIED DESKTOP STAGE WITH DYNAMIC CAMERA / UPWARD MOTION
       ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative w-full hidden md:block" style={{ height: "980px", maxWidth: "1600px" }}>
-
-        {/* 1. ATMOSPHERIC PINK-PURPLE AURA BENEATH CRESCENT (Strictly downwards, extended +80px) */}
+      <div
+        ref={stageMotionRef}
+        className="relative w-full hidden md:block transition-transform will-change-transform"
+        style={{ height: "980px", maxWidth: "1600px" }}
+      >
+        {/* 1. ATMOSPHERIC PINK-PURPLE AURA BENEATH CRESCENT */}
         <div
           ref={centerAuroraBloomRef}
           className="absolute inset-x-0 pointer-events-none z-[2]"
@@ -404,7 +291,7 @@ export default function AIProcessingHub() {
           }}
         />
 
-        {/* 2. WHITE-HOT HORIZONTAL FLARE BENEATH THE CTA BUTTON (Downward spread with plenty of clearance) */}
+        {/* 2. WHITE-HOT HORIZONTAL FLARE BENEATH THE CTA BUTTON */}
         <div
           ref={centerFlareRef}
           className="absolute pointer-events-none z-[8]"
@@ -420,7 +307,7 @@ export default function AIProcessingHub() {
           }}
         />
 
-        {/* 3. VERTICAL LIGHT WATERFALL PILLAR (Thicker, wider & beautifully blended) */}
+        {/* 3. VERTICAL LIGHT WATERFALL PILLAR */}
         <div
           ref={waterfallPillarRef}
           className="absolute pointer-events-none z-[6]"
@@ -466,16 +353,15 @@ export default function AIProcessingHub() {
               <stop offset="100%" stopColor="#db2777" stopOpacity="0.75" />
             </linearGradient>
 
-            {/* Strict Downward Clip: Only allows glow to expand downwards beneath the crescent arch */}
+            {/* Strict Downward Clip */}
             <clipPath id="crescentDownwardClip">
               <path d="M 0 170 C 400 420, 600 480, 800 480 C 1000 480, 1200 420, 1600 170 L 1600 980 L 0 980 Z" />
             </clipPath>
           </defs>
 
-          {/* ── GLOW CONTAINER CLIPPED STRICTLY DOWNWARDS (NO UPWARD BLEED, 100% SMOOTH BLUR) ── */}
+          {/* ── GLOW CONTAINER CLIPPED STRICTLY DOWNWARDS ── */}
           <g clipPath="url(#crescentDownwardClip)">
-            {/* ── LEFT CRESCENT (Deep downward radiant curtain following user marker) ── */}
-            {/* Deep atmospheric underglow reaching ~190px+ downwards */}
+            {/* ── LEFT CRESCENT (Deep downward radiant curtain) ── */}
             <path
               ref={crescentLeftGlowRef}
               d="M 0 170 C 400 420, 600 480, 800 480"
@@ -484,7 +370,6 @@ export default function AIProcessingHub() {
               strokeLinecap="butt"
               style={{ filter: "blur(54px)" }}
             />
-            {/* Mid magenta-pink aura */}
             <path
               ref={crescentLeftBaseRef}
               d="M 0 170 C 400 420, 600 480, 800 480"
@@ -493,7 +378,6 @@ export default function AIProcessingHub() {
               strokeLinecap="butt"
               style={{ filter: "blur(28px)" }}
             />
-            {/* Soft radiant core matching the pink/magenta glow without hard line */}
             <path
               ref={crescentLeftLaserRef}
               d="M 0 170 C 400 420, 600 480, 800 480"
@@ -503,8 +387,7 @@ export default function AIProcessingHub() {
               style={{ filter: "blur(10px) drop-shadow(0 0 20px rgba(244,114,182,0.95))" }}
             />
 
-            {/* ── RIGHT CRESCENT (Deep downward radiant curtain following user marker) ── */}
-            {/* Deep atmospheric underglow reaching ~190px+ downwards */}
+            {/* ── RIGHT CRESCENT (Deep downward radiant curtain) ── */}
             <path
               ref={crescentRightGlowRef}
               d="M 1600 170 C 1200 420, 1000 480, 800 480"
@@ -513,7 +396,6 @@ export default function AIProcessingHub() {
               strokeLinecap="butt"
               style={{ filter: "blur(54px)" }}
             />
-            {/* Mid magenta-pink aura */}
             <path
               ref={crescentRightBaseRef}
               d="M 1600 170 C 1200 420, 1000 480, 800 480"
@@ -522,7 +404,6 @@ export default function AIProcessingHub() {
               strokeLinecap="butt"
               style={{ filter: "blur(28px)" }}
             />
-            {/* Soft radiant core matching the pink/magenta glow without hard line */}
             <path
               ref={crescentRightLaserRef}
               d="M 1600 170 C 1200 420, 1000 480, 800 480"
@@ -533,7 +414,7 @@ export default function AIProcessingHub() {
             />
           </g>
 
-          {/* Downward Waterfall Core Laser (Thicker & deeply luminous) */}
+          {/* Downward Waterfall Core Laser */}
           <path
             ref={waterfallLaserRef}
             d="M 800 480 L 800 705"
@@ -544,146 +425,13 @@ export default function AIProcessingHub() {
           />
         </svg>
 
-        {/* 5. TOP CURVED TOKEN ARCH & ROCKET SPEEDOMETER (MATCHING IMAGE 1) */}
-        <div
-          ref={orbitBarRef}
-          className="absolute z-20 top-3 left-1/2 -translate-x-1/2 w-full max-w-[1380px] px-6 flex items-center justify-center gap-6 lg:gap-10"
-        >
-          {/* Left 5 Tokens with gentle arch curve alignment */}
-          <div className="flex items-center gap-4 lg:gap-5 flex-1 justify-end">
-            {tokensLeft.map((tk) => {
-              const sizeClasses =
-                tk.size === "sm"
-                  ? "w-13 h-13 lg:w-14 lg:h-14"
-                  : tk.size === "lg"
-                    ? "w-17 h-17 lg:w-20 lg:h-20"
-                    : "w-15 h-15 lg:w-17 lg:h-17";
-
-              return (
-                <div
-                  key={tk.symbol}
-                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_6px_20px_rgba(0,0,0,0.65)]`}
-                  style={{
-                    backgroundColor: tk.bgColor,
-                    transform: `translateY(${tk.yOffset}px)`,
-                  }}
-                >
-                  <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">
-                    {tk.icon}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Center Rocket Speedometer Badge with Layered Concentric Rings */}
-          <div className="relative shrink-0 flex items-center justify-center w-32 h-32 lg:w-36 lg:h-36">
-            {/* Outer dark stepped ring */}
-            <div
-              className="absolute inset-0 rounded-full bg-[#0a0c13] border border-white/10 shadow-[0_0_35px_rgba(219,39,119,0.25)] flex items-center justify-center"
-            >
-              {/* Spinning particle dots ring */}
-              <div className="absolute inset-1 rounded-full border border-pink-500/20 animate-[spin_16s_linear_infinite]">
-                <div className="absolute w-2 h-2 rounded-full bg-pink-400 top-1 right-3 shadow-[0_0_8px_#f472b6]" />
-                <div className="absolute w-2 h-2 rounded-full bg-purple-400 bottom-1 left-3 shadow-[0_0_8px_#c084fc]" />
-              </div>
-
-              {/* Inner Speedometer core with neon arc gauge */}
-              <div className="w-[76%] h-[76%] rounded-full bg-[#12141f] border border-white/15 flex items-center justify-center relative overflow-hidden shadow-inner">
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                  <path
-                    d="M 20 68 A 34 34 0 0 1 80 68"
-                    fill="none"
-                    stroke="url(#speedometerArcGrad)"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient id="speedometerArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#7c3aed" />
-                      <stop offset="50%" stopColor="#db2777" />
-                      <stop offset="100%" stopColor="#f472b6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <Rocket className="relative z-10 w-11 h-11 text-white stroke-[2.2] drop-shadow-[0_0_14px_rgba(255,255,255,0.95)]" />
-              </div>
-            </div>
-          </div>
-
-          {/* Right 5 Tokens with gentle arch curve alignment */}
-          <div className="flex items-center gap-4 lg:gap-5 flex-1 justify-start">
-            {tokensRight.map((tk) => {
-              const sizeClasses =
-                tk.size === "sm"
-                  ? "w-13 h-13 lg:w-14 lg:h-14"
-                  : tk.size === "lg"
-                    ? "w-17 h-17 lg:w-20 lg:h-20"
-                    : "w-15 h-15 lg:w-17 lg:h-17";
-
-              return (
-                <div
-                  key={tk.symbol}
-                  className={`${sizeClasses} shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-115 shadow-[0_6px_20px_rgba(0,0,0,0.65)]`}
-                  style={{
-                    backgroundColor: tk.bgColor,
-                    transform: `translateY(${tk.yOffset}px)`,
-                  }}
-                >
-                  <span style={{ color: tk.textColor }} className="flex items-center justify-center w-full h-full">
-                    {tk.icon}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 6. HEADLINE & BUTTONS (Framed inside the planetary crescent with generous breathing room) */}
-        <div
-          ref={headerWrapRef}
-          className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center text-center w-full max-w-2xl"
-          style={{ top: "165px" }}
-        >
-          <h2
-            className="text-white text-4xl lg:text-[54px] font-light tracking-tight leading-[1.14]"
-            style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
-          >
-            10K+ Crypto Assets <br />
-            <span className="font-normal text-white">
-              Available To Trade
-            </span>
-          </h2>
-          <p
-            className="mt-3.5 text-sm lg:text-[15px] text-gray-300 font-light max-w-lg leading-relaxed"
-            style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
-          >
-            Explore every potential Crypto Assets with AI assistance
-          </p>
-
-          {/* Buttons */}
-          <div className="mt-6 flex items-center gap-6">
-            <button
-              type="button"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer font-medium px-3 py-1.5"
-            >
-              Learn More
-            </button>
-            <button
-              type="button"
-              className="rounded-full px-7 py-3 text-sm font-medium text-white flex items-center gap-2.5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_28px_rgba(219,39,119,0.5)]"
-              style={{
-                background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)",
-              }}
-            >
-              <span>Start Trading Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+        {/* 5. MODULAR TOKEN ORBIT BAR */}
+        <div className="relative z-20">
+          <TokenOrbitBar />
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
-            7. AI CPU CHIP & 4 METRIC CARDS WITH EXACT S-CURVE NODES
+            6. AI CPU CHIP & 4 METRIC CARDS WITH EXACT S-CURVE NODES
         ══════════════════════════════════════════════════════════════════════ */}
         <div
           className="absolute z-20 left-1/2 -translate-x-1/2 w-full max-w-[1040px]"
@@ -745,7 +493,7 @@ export default function AIProcessingHub() {
             />
           </svg>
 
-          {/* Central AI CPU Chip (Clean matte black chassis with vibrant coral/pink core) */}
+          {/* Central AI CPU Chip */}
           <div
             ref={chipContainerRef}
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
@@ -867,41 +615,7 @@ export default function AIProcessingHub() {
           MOBILE VIEW (< 768px)
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="md:hidden flex flex-col items-center px-4 py-8">
-        <div className="flex items-center gap-2 flex-wrap justify-center mb-6">
-          {[...tokensLeft.slice(-2), ...tokensRight.slice(0, 2)].map((tk) => (
-            <div
-              key={tk.symbol}
-              className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center"
-              style={{ backgroundColor: tk.bgColor }}
-            >
-              <span style={{ color: tk.textColor, fontSize: "11px" }}>{tk.icon}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center max-w-sm">
-          <h2
-            className="text-white text-2xl font-light tracking-tight leading-tight"
-            style={{ fontFamily: "var(--font-outfit, sans-serif)" }}
-          >
-            10K+ Crypto Assets <br />
-            <span className="font-normal">Available To Trade</span>
-          </h2>
-          <p className="mt-2 text-xs text-gray-400 font-light">
-            Explore every potential Crypto Assets with AI assistance
-          </p>
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <button type="button" className="text-xs text-gray-400 font-medium">Learn More</button>
-            <button
-              type="button"
-              className="rounded-full px-4 py-2 text-xs font-medium text-white flex items-center gap-1.5"
-              style={{ background: "linear-gradient(90deg, #7c3aed 0%, #db2777 100%)" }}
-            >
-              <span>Start Trading Now</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
+        <TokenOrbitBar />
 
         {/* Mobile Chip */}
         <div className="relative z-10 w-24 h-24 rounded-2xl bg-[#0c0d14] border border-white/20 p-2.5 flex items-center justify-center shadow-[0_0_30px_rgba(219,39,119,0.4)] mt-8">
